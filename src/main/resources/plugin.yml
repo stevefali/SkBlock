@@ -1,0 +1,4 @@
+name: skblock
+version: '1.0-SNAPSHOT'
+main: com.steve.skblock.Skblock
+api-version: '1.21'
