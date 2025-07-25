@@ -1,5 +1,6 @@
 package com.steve.skblock.events;
 
+import com.steve.skblock.util.CobbleGenerator;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import org.bukkit.Material;
@@ -32,11 +33,10 @@ public class CobbleGenerationEvent implements Listener {
     @EventHandler
     public void onGenerateCobblestone(BlockFormEvent event) {
         if (event.getNewState().getType() == Material.COBBLESTONE) {
-            logger.info("That's cobblestone!!");
-            event.getNewState().setType(Material.GOLD_BLOCK);
+            event.getNewState().setType(CobbleGenerator.determineBlock());
         }
 
-        System.out.println("Block generated at: " + event.getBlock().getLocation().toVector());
+//        System.out.println("Block generated at: " + event.getBlock().getLocation().toVector());
 
         ClientboundSetTitleTextPacket titlePack = new ClientboundSetTitleTextPacket(IChatBaseComponent.a("§6YOOO MAAAANNNN"));
 

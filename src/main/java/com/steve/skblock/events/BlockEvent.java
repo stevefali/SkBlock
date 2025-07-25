@@ -17,13 +17,13 @@ public class BlockEvent implements Listener {
             Player player = event.getPlayer();
             Location location = player.getLocation();
 
-            System.out.println("Pitch: " + location.getPitch());
-            System.out.println("Yaw: " + location.getYaw());
+//            System.out.println("Pitch: " + location.getPitch());
+//            System.out.println("Yaw: " + location.getYaw());
 
-            ClientboundPlayerRotationPacket rotationPacket = new ClientboundPlayerRotationPacket(location.getYaw(), location.getPitch() + 90);
+            /*ClientboundPlayerRotationPacket rotationPacket = new ClientboundPlayerRotationPacket(location.getYaw(), location.getPitch() + 90);
 
             CraftPlayer craftPlayer = (CraftPlayer) player;
-            craftPlayer.getHandle().f.b(rotationPacket);
+            craftPlayer.getHandle().f.b(rotationPacket);*/
         }
         ;
     }
