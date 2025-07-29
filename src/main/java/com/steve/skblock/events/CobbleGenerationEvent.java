@@ -4,7 +4,7 @@ import com.steve.skblock.util.CobbleGenerator;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_21_R2.entity.CraftPlayer;
+//import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,9 +20,9 @@ import java.util.logging.Logger;
 public class CobbleGenerationEvent implements Listener {
 
 
-   Logger logger;
+    Logger logger;
 
-   Plugin plugin;
+    Plugin plugin;
 
 
     public CobbleGenerationEvent(Plugin plugin) {
@@ -38,11 +38,9 @@ public class CobbleGenerationEvent implements Listener {
 
 //        System.out.println("Block generated at: " + event.getBlock().getLocation().toVector());
 
-        ClientboundSetTitleTextPacket titlePack = new ClientboundSetTitleTextPacket(IChatBaseComponent.a("§6YOOO MAAAANNNN"));
+        /* ClientboundSetTitleTextPacket titlePack = new ClientboundSetTitleTextPacket(IChatBaseComponent.a("§6YOOO MAAAANNNN"));
 
         ClientboundSetTitlesAnimationPacket titlesAnimationPacket = new ClientboundSetTitlesAnimationPacket(7, 33, 7);
-
-
 
         List<Player> players = event.getBlock().getWorld().getPlayersSeeingChunk(event.getBlock().getChunk()).stream().toList();
 
@@ -50,7 +48,7 @@ public class CobbleGenerationEvent implements Listener {
             CraftPlayer craftPlayer = (CraftPlayer) player;
             craftPlayer.getHandle().f.b(titlePack);
             craftPlayer.getHandle().f.b(titlesAnimationPacket);
-        }
+        }*/
     }
 
 }

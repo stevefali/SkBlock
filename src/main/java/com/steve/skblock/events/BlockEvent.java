@@ -3,11 +3,12 @@ package com.steve.skblock.events;
 import net.minecraft.network.protocol.game.ClientboundPlayerRotationPacket;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_21_R2.entity.CraftPlayer;
+//import org.bukkit.craftbukkit.v1_21_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class BlockEvent implements Listener {
 

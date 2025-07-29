@@ -25,6 +25,8 @@ public final class Skblock extends JavaPlugin {
         getServer().getPluginManager().registerEvents(playerEvent, this);
         getServer().getPluginManager().registerEvents(cobbleGenerationEvent, this);
         getServer().getPluginManager().registerEvents(blockEvent, this);
+
+
     }
 
     @Override
