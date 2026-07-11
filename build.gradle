@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
@@ -27,10 +28,14 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
-    compileOnly("org.spigotmc:spigot:1.21.4-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle('1.21.4-R0.1-SNAPSHOT')
+//    compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
+//    compileOnly("org.spigotmc:spigot:1.21.4-R0.1-SNAPSHOT")
+
     // Multiverse
     compileOnly("org.mvplugins.multiverse.core:multiverse-core:5.0.0-SNAPSHOT")
+    // Multiverse-portals
+//    compileOnly("org.mvplugins.multiverse.portals:multiverse-portals:5.1.0-SNAPSHOT")
     // FAWE
     implementation(platform("com.intellectualsites.bom:bom-newest:1.52")) // Ref: https://github.com/IntellectualSites/bom
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
@@ -45,6 +50,10 @@ tasks {
         // This is the only required configuration besides applying the plugin.
         // Your plugin's jar (or shadowJar if present) will be used automatically.
         minecraftVersion("1.21")
+    }
+
+    assemble {
+        dependsOn(reobfJar)
     }
 }
 
@@ -66,22 +75,42 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
-tasks.jar {
+//tasks.jar {
+//    doLast {
+//        def exportPath = project.findProperty('plugin.export')
+//        if (exportPath instanceof String) {
+//            copy {
+//                from archiveFile
+//                into file(exportPath)
+//                rename '.*', "${rootProject.name}.jar"
+//            }
+//            println "Exported plugin to $exportPath"
+//        } else {
+//            println "Error exporting plugin jar."
+//        }
+//
+//    }
+//}
+
+tasks.reobfJar {
     doLast {
+        def finalJar = outputJar.get().asFile
+
         def exportPath = project.findProperty('plugin.export')
         if (exportPath instanceof String) {
             copy {
-                from archiveFile
+                from finalJar
                 into file(exportPath)
                 rename '.*', "${rootProject.name}.jar"
             }
             println "Exported plugin to $exportPath"
         } else {
-            println "You can export the plugin jar to your server plugins folder by providing its path with the 'plugin.export' property of 'gradle.properties'"
+            println "Error exporting plugin jar."
         }
-
     }
 }
+
+
 
 processResources {
     def props = [version: version]
