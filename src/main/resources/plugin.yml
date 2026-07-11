@@ -2,3 +2,19 @@ name: skblock
 version: '1.0-SNAPSHOT'
 main: com.steve.skblock.Skblock
 api-version: '1.21'
+softdepend:
+  - 'Multiverse-Core'
+  - 'Multiverse-Portals'
+commands:
+    sendplayer:
+      description: Send player to given world
+    makeworld:
+      description: Make a new skyblock world
+    deleteworld:
+      description: Delete specified world from skyblock folder
+    loadworld:
+      description: Load the skyblock world with the specified suffix
+    lobby:
+      description: Go to the skyblock lobby
+    home:
+      description: Go to the home lobby server
