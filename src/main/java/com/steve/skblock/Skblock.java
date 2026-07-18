@@ -5,9 +5,14 @@ import com.steve.skblock.events.BlockEvent;
 import com.steve.skblock.events.CobbleGenerationEvent;
 import com.steve.skblock.events.PlayerEvent;
 import com.steve.skblock.events.PortalEvents;
+import com.steve.skblock.npc.NpcSkin;
+import com.steve.skblock.npc.NpcSkinDataAccess;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 //import org.mvplugins.multiverse.portals.MultiversePortals;
 
 public final class Skblock extends JavaPlugin {
@@ -18,10 +23,11 @@ public final class Skblock extends JavaPlugin {
     private BlockEvent blockEvent;
     private PortalEvents portalEvents;
 
+    public static Map<String, NpcSkin> NPC_SKINS = null;
+
     @Override
     public void onEnable() {
         // Plugin startup logic
-
 
 
         playerEvent = new PlayerEvent();
@@ -45,6 +51,16 @@ public final class Skblock extends JavaPlugin {
         getCommand("lobby").setExecutor(new LobbyCommand());
         getCommand("home").setExecutor(new HomeCommand(this));
 
+        // TODO: Move/refactor this to setup lobby NPC's when lobby world is loaded (and skyblock worlds when they load)
+       /* NpcSkinDataAccess.load(this)
+                .exceptionally(throwable -> {
+                    throwable.printStackTrace();
+                    return null;
+                })
+                .thenApply(result -> {
+                    NPC_SKINS = result;
+                    return result;
+                });*/
 
     }
 
