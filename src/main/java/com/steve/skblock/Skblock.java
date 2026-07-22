@@ -5,12 +5,15 @@ import com.steve.skblock.events.BlockEvent;
 import com.steve.skblock.events.CobbleGenerationEvent;
 import com.steve.skblock.events.PlayerEvent;
 import com.steve.skblock.events.PortalEvents;
+import com.steve.skblock.network.PacketListenerInjector;
 import com.steve.skblock.npc.NpcSkin;
 import com.steve.skblock.npc.NpcSkinDataAccess;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 //import org.mvplugins.multiverse.portals.MultiversePortals;
@@ -30,7 +33,7 @@ public final class Skblock extends JavaPlugin {
         // Plugin startup logic
 
 
-        playerEvent = new PlayerEvent();
+        playerEvent = new PlayerEvent(this);
         cobbleGenerationEvent = new CobbleGenerationEvent(this);
         blockEvent = new BlockEvent(this);
         portalEvents = new PortalEvents(this);
@@ -62,11 +65,25 @@ public final class Skblock extends JavaPlugin {
                     return result;
                 });*/
 
+//        List<Player> skyblockPlayers = Bukkit.getWorld("skyblock_lobby").getPlayers();
+//        for (Player player : skyblockPlayers) {
+//            PacketListenerInjector.inject(player, this);
+//        }
+
+//        List<Player> currentPlayers =
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            PacketListenerInjector.inject(player, this);
+        }
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            PacketListenerInjector.eject(player);
+        }
 
         getServer().getMessenger().unregisterOutgoingPluginChannel(this);
 

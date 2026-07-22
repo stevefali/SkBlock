@@ -4,9 +4,13 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.steve.skblock.npc.NPC;
+import com.steve.skblock.npc.NPCs;
 import com.steve.skblock.npc.NpcSkin;
 import com.steve.skblock.npc.NpcSkinDataAccess;
+import io.netty.channel.Channel;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.minecraft.network.Connection;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -17,9 +21,8 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.*;
+import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import org.bukkit.Bukkit;
@@ -31,8 +34,10 @@ import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -86,7 +91,8 @@ public class BlockEvent implements Listener {
 //            GameProfile profile = new GameProfile(UUID.fromString("ac5a510c-85d1-4d76-adcb-1dea80bdbe1e"), "LegendOfLink469");
 //            GameProfile profile = new GameProfile(UUID.fromString("ac5a510c-85d1-4d76-adcb-1dea80bdbe1f"), "Randy");
 //            GameProfile profile = new GameProfile(UUID.fromString("38e56fef-8864-470d-afa4-359119973e2a"), "Randy");
-            GameProfile profile = new GameProfile(UUID.randomUUID(), "Randy");
+            UUID uuid = UUID.randomUUID();
+            GameProfile profile = new GameProfile(uuid, "Randy");
 
 //
 //            String texture = "ewogICJ0aW1lc3RhbXAiIDogMTc4NDMyOTc0MjIxMywKICAicHJvZmlsZUlkIiA6ICIzOGU1NmZlZjg4NjQ0NzBkYWZhNDM1OTExOTk3M2UyYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJzdGV2ZWZhbCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hZjY2NGVlOGIwMzhlZTJlYzBhMTE2YTRiODVkYjZjOTFlYWRkOGRmNDJlOTU3YzFlZTg1ZjE1YTNjMDAzZDUyIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=";
@@ -95,19 +101,34 @@ public class BlockEvent implements Listener {
 //            profile.getProperties().put("textures", new Property("textures", texture, signature));
 
 
-            ServerPlayer randy = new ServerPlayer(
+            NPC randy = new NPC(
                     minecraftServer,
                     serverLevel,
                     profile,
                     ClientInformation.createDefault()
             );
 
+            randy.setSpeakingMessage("Hey there! I'm Randy.");
+
+
+
+            NPCs.npcMap.put("Randy_skyblock_lobby", randy);
+
             randysId = randy.getId();
+            System.out.println("Randy id: " + randysId);
+
+//            ServerPlayer alsoRandy = (ServerPlayer) serverLevel.getPlayerByUUID(uuid);
+//
+//            System.out.println("Also Randy's id: " + alsoRandy.getId());
 
 
             randy.setPos(location.getX(), location.getY(), location.getZ());
             randy.setXRot(0);
             randy.setYRot(0);
+
+            System.out.println(randy.level().getWorld().getName());
+            System.out.println(randy.displayName);
+            System.out.println(randy.getUUID());
 
             NpcSkinDataAccess.load(plugin)
                     .exceptionally(throwable -> {
@@ -189,6 +210,8 @@ public class BlockEvent implements Listener {
                 ClientboundRemoveEntitiesPacket removeEntitiesPacket = new ClientboundRemoveEntitiesPacket(randysId);
 
                 connection.send(removeEntitiesPacket);
+
+                NPCs.npcMap.remove("Randy_skyblock_lobby");
             } else {
                 System.out.println("No valid id found");
             }
@@ -202,9 +225,16 @@ public class BlockEvent implements Listener {
 //                System.out.println(world.getName());
 //            }
 
-            File directory = new File("./");
-            for (File file : directory.listFiles()) {
-                System.out.println(file.getName());
+//            File directory = new File("./");
+//            for (File file : directory.listFiles()) {
+//                System.out.println(file.getName());
+//            }
+
+            try {
+                System.out.println("Randy's name from npcIds: " + NPCs.npcIds.get(NPCs.npcMap.get("Randy_skyblock_lobby").getId()) );
+                System.out.println(NPCs.npcMap.get("Randy_skyblock_lobby").getUUID());
+            } catch (Exception e) {
+                System.out.println("Can't find NPC with that ID");
             }
 
         }
