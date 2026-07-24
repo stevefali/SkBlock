@@ -1,53 +1,47 @@
 package com.steve.skblock.events;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.datafixers.util.Pair;
 import com.steve.skblock.npc.NPC;
 import com.steve.skblock.npc.NPCs;
 import com.steve.skblock.npc.NpcSkin;
 import com.steve.skblock.npc.NpcSkinDataAccess;
-import io.netty.channel.Channel;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraft.network.Connection;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.game.*;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.*;
-import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.craftbukkit.CraftEquipmentSlot;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.plugin.Plugin;
 import sun.misc.Unsafe;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 public class BlockEvent implements Listener {
 
@@ -105,7 +99,9 @@ public class BlockEvent implements Listener {
                     minecraftServer,
                     serverLevel,
                     profile,
-                    ClientInformation.createDefault()
+                    ClientInformation.createDefault(),
+//                    player -> player.sendMessage("Ouch! That hurt!")
+                    null
             );
 
             randy.setSpeakingMessage("Hey there! I'm Randy.");
@@ -123,8 +119,17 @@ public class BlockEvent implements Listener {
 
 
             randy.setPos(location.getX(), location.getY(), location.getZ());
-            randy.setXRot(0);
-            randy.setYRot(0);
+            randy.setXRot(-15);
+            randy.setYRot(45);
+            randy.setYHeadRot(45);
+
+
+//            ItemStack nmsStack = ((CraftItemStack) bukkitStack)
+//
+//            Item item = Items.DIAMOND_PICKAXE;
+//            ItemStack randysItemStack = new ItemStack(item, 1);
+
+//            randy.setItemInHand(InteractionHand.MAIN_HAND, randysItemStack);
 
             System.out.println(randy.level().getWorld().getName());
             System.out.println(randy.displayName);
@@ -140,7 +145,7 @@ public class BlockEvent implements Listener {
                         profile.getProperties().put("textures", new Property("textures", randySkin.texture(), randySkin.signature()));
 
                         SynchedEntityData randyData = randy.getEntityData();
-                        SynchedEntityData.DataValue outerLayersValue = new SynchedEntityData.DataValue<>(17, EntityDataSerializers.BYTE, (byte) 0x7F);
+                        SynchedEntityData.DataValue<Byte> outerLayersValue = new SynchedEntityData.DataValue<>(17, EntityDataSerializers.BYTE, (byte) 0x7F);
 
                         List<SynchedEntityData.DataValue<?>> dataValuesCopy = new ArrayList<>();
                         dataValuesCopy.addAll(randyData.getNonDefaultValues());
@@ -173,8 +178,25 @@ public class BlockEvent implements Listener {
 
                             connection.send(new ClientboundAddEntityPacket(randy, 0, randy.blockPosition()));
 
+//                            connection.send(new ClientboundRotateHeadPacket(randy, (byte) (randy.getYHeadRot() * 256 / 360)));
+
                             ClientboundSetEntityDataPacket dataPacket = new ClientboundSetEntityDataPacket(randysId, dataValuesCopy);
                             connection.send(dataPacket);
+
+                            /*org.bukkit.inventory.ItemStack bukkitStack = new org.bukkit.inventory.ItemStack(Material.GRASS_BLOCK);
+                            ItemStack nmsStack = CraftItemStack.asNMSCopy(bukkitStack);
+                            List<Pair<EquipmentSlot, ItemStack>> equipmentList = new ArrayList<>();
+
+                            net.minecraft.world.entity.EquipmentSlot.MAINHAND;
+
+                            EquipmentSlot.HAND.
+
+
+                            equipmentList.add(new Pair<>(EquipmentSlot.HAND., nmsStack));
+
+
+                            connection.send(new ClientboundSetEquipmentPacket(randysId, equipmentList));
+*/
 
 //                System.out.println("Should have sent packets");
 
@@ -242,7 +264,47 @@ public class BlockEvent implements Listener {
 
         if (event.getBlock().getType() == Material.DIAMOND_BLOCK) {
 
-            Location location = event.getBlock().getState().getLocation();
+
+
+            /*EquipmentSlot[] allBukkitSlots = EquipmentSlot.values();
+
+            net.minecraft.world.entity.EquipmentSlot nmsHand = net.minecraft.world.entity.EquipmentSlot.MAINHAND;
+            net.minecraft.world.entity.EquipmentSlot[] allNmsSlots = net.minecraft.world.entity.EquipmentSlot.values();
+
+            System.out.println("---------------");
+            System.out.println("Bukkit hand slot: " + bukkitHand.name() + ", " + bukkitHand.toString());
+            System.out.println("Bukkit slots: ");
+            for (var slot : allBukkitSlots) {
+                System.out.println(slot.name() + ", " + slot.toString());
+            }
+            System.out.println("---------------");
+            System.out.println("NMS hand slot: " + nmsHand.name() + ", " + nmsHand.getName() + ", " + nmsHand.toString());
+            System.out.println("NMS slots: ");
+            for (var slot : allNmsSlots) {
+                System.out.println(slot.name() + ", " + slot.getName() + ", " + slot.toString());
+            }
+            System.out.println("---------------");*/
+
+            ServerPlayer serverPlayer = ((CraftPlayer) event.getPlayer()).getHandle();
+            ServerGamePacketListenerImpl connection = serverPlayer.connection;
+
+            EquipmentSlot bukkitHand = EquipmentSlot.HAND;
+
+            net.minecraft.world.entity.EquipmentSlot convertedHand = CraftEquipmentSlot.getNMS(bukkitHand);
+
+            org.bukkit.inventory.ItemStack bukkitStack = new org.bukkit.inventory.ItemStack(Material.DIAMOND);
+            ItemStack nmsStack = CraftItemStack.asNMSCopy(bukkitStack);
+
+            List<Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack>> equipmentList = new ArrayList<>();
+            equipmentList.add(new Pair<>(convertedHand, nmsStack));
+
+            connection.send(new ClientboundSetEquipmentPacket(randysId, equipmentList));
+
+
+
+
+
+            /*Location location = event.getBlock().getState().getLocation();
 
             LivingEntity randy = (LivingEntity) location.getWorld().spawnEntity(location, EntityType.VILLAGER);
             randy.setAI(false);
@@ -259,7 +321,7 @@ public class BlockEvent implements Listener {
 
             if (randy.getAttribute(Attribute.KNOCKBACK_RESISTANCE) != null) {
                 randy.getAttribute(Attribute.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-            }
+            }*/
 
 
 

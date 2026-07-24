@@ -1,10 +1,7 @@
 package com.steve.skblock;
 
 import com.steve.skblock.commands.*;
-import com.steve.skblock.events.BlockEvent;
-import com.steve.skblock.events.CobbleGenerationEvent;
-import com.steve.skblock.events.PlayerEvent;
-import com.steve.skblock.events.PortalEvents;
+import com.steve.skblock.events.*;
 import com.steve.skblock.network.PacketListenerInjector;
 import com.steve.skblock.npc.NpcSkin;
 import com.steve.skblock.npc.NpcSkinDataAccess;
@@ -43,6 +40,7 @@ public final class Skblock extends JavaPlugin {
         getServer().getPluginManager().registerEvents(cobbleGenerationEvent, this);
         getServer().getPluginManager().registerEvents(blockEvent, this);
         getServer().getPluginManager().registerEvents(portalEvents, this);
+        getServer().getPluginManager().registerEvents(new WorldEvent(), this);
 
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");

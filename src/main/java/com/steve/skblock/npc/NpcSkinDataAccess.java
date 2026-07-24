@@ -16,13 +16,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class NpcSkinDataAccess {
     private static final String NPC_SKIN_FILE_PATH = "./npc-skins.json";
-//    private final Gson gson = new Gson();
-
-    /// /    private Plugin plugin;
-    /// /
-    /// /    public NpcSkinDataAccess(Plugin plugin) {
-    /// /        this.plugin = plugin;
-    /// /    }
 
 
     public static CompletableFuture<Map<String, NpcSkin>> load(Plugin plugin) {
