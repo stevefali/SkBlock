@@ -21,7 +21,7 @@ public class NpcSkinDataAccess {
     public static CompletableFuture<Map<String, NpcSkin>> load(Plugin plugin) {
         CompletableFuture<Map<String, NpcSkin>> future = new CompletableFuture<>();
 
-        if (Skblock.NPC_SKINS != null) {
+        if (Skblock.NPC_SKINS != null && !Skblock.NPC_SKINS.isEmpty()) {
             future.complete(Skblock.NPC_SKINS);
         } else {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {

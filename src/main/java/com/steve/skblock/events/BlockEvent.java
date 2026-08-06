@@ -14,12 +14,16 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.*;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,6 +37,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -48,6 +53,10 @@ public class BlockEvent implements Listener {
     private Plugin plugin;
     private static final String BUNGEE_CHANNEL = "BungeeCord";
 
+    private static final NpcSkin DEFAULT_SKIN = new NpcSkin(
+            "ewogICJ0aW1lc3RhbXAiIDogMTc4NDI2OTI2NTE1NywKICAicHJvZmlsZUlkIiA6ICIzOGU1NmZlZjg4NjQ0NzBkYWZhNDM1OTExOTk3M2UyYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJzdGV2ZWZhbCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8xYTRhZjcxODQ1NWQ0YWFiNTI4ZTdhNjFmODZmYTI1ZTZhMzY5ZDE3NjhkY2IxM2Y3ZGYzMTlhNzEzZWI4MTBiIgogICAgfQogIH0KfQ==",
+            "EMn77YzJ/Du0dg9EnataOVERmCsUsIs1ImdzaQehe537vZYycY1WXlLdW4zBNk8Hep+FJPXWMaXNal84ZZk/2OhtDzT9OnWN1JDGzDG3qvLF7rgmGNifIQh6CUlNmjGajkwlhwcSfL+RZfET+IsQ/MeoyikzACb7SYR+hwtIHWEEl84rxLzYBj9gqTfJZfUleFHBAKE04w2Ld6WYGUuO9ZvEauqemD4C8K3WxJOtxQjkRaJHUJ7JOH74Ua9Egb0PcK+jblMd/CKhyBShh86HVdaTwwoClO956DQ98d23J7i+zSOKjBDRkaXXoX2vW/Yl+WJb95p8ABwdE+151fLPWmnu6LhtiXGdxHms6aEvRVD/fLMatpb3FkU0+r8T3SpYbVN03jF8s44eq78AhoSMHHuGgKSnjP7j+KfbhiwgGPL51eW3N6GGnIiE8ADECdjc9safP59w/wRK0PJS3jph02zqtIM1imeu/sY5xouQHdnjR8l0tG5T4lUjuEHKK4uNYaqQfEwVJHYdV7GRAjc58Wm6fRNrfa270mxFJ9xz0mhHpbIhI4mSyw1htcWftBYcm4Vfy4+7B/Ta2JSqZr/L2hGLIQGt5ipSITfa6pBynlyyCOwJqAzxTThrlBOz2A7R1THgaqBTUTl4UwLKB5uOLBa4W3qn1UHQL6Q8l1P2y0I="
+    );
 
     private static int randysId;
 
@@ -86,7 +95,7 @@ public class BlockEvent implements Listener {
 //            GameProfile profile = new GameProfile(UUID.fromString("ac5a510c-85d1-4d76-adcb-1dea80bdbe1f"), "Randy");
 //            GameProfile profile = new GameProfile(UUID.fromString("38e56fef-8864-470d-afa4-359119973e2a"), "Randy");
             UUID uuid = UUID.randomUUID();
-            GameProfile profile = new GameProfile(uuid, "Randy");
+            GameProfile profile = new GameProfile(uuid, "§aRandy");
 
 //
 //            String texture = "ewogICJ0aW1lc3RhbXAiIDogMTc4NDMyOTc0MjIxMywKICAicHJvZmlsZUlkIiA6ICIzOGU1NmZlZjg4NjQ0NzBkYWZhNDM1OTExOTk3M2UyYSIsCiAgInByb2ZpbGVOYW1lIiA6ICJzdGV2ZWZhbCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9hZjY2NGVlOGIwMzhlZTJlYzBhMTE2YTRiODVkYjZjOTFlYWRkOGRmNDJlOTU3YzFlZTg1ZjE1YTNjMDAzZDUyIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0=";
@@ -107,7 +116,6 @@ public class BlockEvent implements Listener {
             randy.setSpeakingMessage("Hey there! I'm Randy.");
 
 
-
             NPCs.npcMap.put("Randy_skyblock_lobby", randy);
 
             randysId = randy.getId();
@@ -119,9 +127,9 @@ public class BlockEvent implements Listener {
 
 
             randy.setPos(location.getX(), location.getY(), location.getZ());
-            randy.setXRot(-15);
-            randy.setYRot(45);
-            randy.setYHeadRot(45);
+//            randy.setXRot(-15);
+//            randy.setYRot(220);
+//            randy.setYHeadRot(220);
 
 
 //            ItemStack nmsStack = ((CraftItemStack) bukkitStack)
@@ -141,7 +149,9 @@ public class BlockEvent implements Listener {
                         return new HashMap<>();
                     })
                     .thenAccept(skinDataResult -> {
-                        NpcSkin randySkin = skinDataResult.get("Randy");
+                        NpcSkin randySkin = (skinDataResult.get("Randy") != null)
+                                ? skinDataResult.get("Randy")
+                                : DEFAULT_SKIN;
                         profile.getProperties().put("textures", new Property("textures", randySkin.texture(), randySkin.signature()));
 
                         SynchedEntityData randyData = randy.getEntityData();
@@ -205,6 +215,7 @@ public class BlockEvent implements Listener {
                             }, 20L);
 
 
+//                            connection.send(new ClientboundRotateHeadPacket(randy, (byte) ((randy.getYRot() % 360) * 256 / 360)));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -227,13 +238,15 @@ public class BlockEvent implements Listener {
         if (event.getBlock().getType() == Material.ORANGE_WOOL) {
 
             if (randysId != 0) {
+
+
+                NPCs.npcMap.remove("Randy_skyblock_lobby");
+
                 ServerGamePacketListenerImpl connection = ((CraftPlayer) event.getPlayer()).getHandle().connection;
 
                 ClientboundRemoveEntitiesPacket removeEntitiesPacket = new ClientboundRemoveEntitiesPacket(randysId);
 
                 connection.send(removeEntitiesPacket);
-
-                NPCs.npcMap.remove("Randy_skyblock_lobby");
             } else {
                 System.out.println("No valid id found");
             }
@@ -253,8 +266,22 @@ public class BlockEvent implements Listener {
 //            }
 
             try {
-                System.out.println("Randy's name from npcIds: " + NPCs.npcIds.get(NPCs.npcMap.get("Randy_skyblock_lobby").getId()) );
-                System.out.println(NPCs.npcMap.get("Randy_skyblock_lobby").getUUID());
+                ServerPlayer serverPlayer = ((CraftPlayer) event.getPlayer()).getHandle();
+                ServerGamePacketListenerImpl connection = serverPlayer.connection;
+
+                EquipmentSlot bukkitHand = EquipmentSlot.HAND;
+
+                net.minecraft.world.entity.EquipmentSlot convertedHand = CraftEquipmentSlot.getNMS(bukkitHand);
+
+                org.bukkit.inventory.ItemStack bukkitStack = new org.bukkit.inventory.ItemStack(Material.GRASS_BLOCK);
+                ItemStack nmsStack = CraftItemStack.asNMSCopy(bukkitStack);
+
+                List<Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack>> equipmentList =
+                        NPCs.npcMap.get("Randy_skyblock_lobby").getEquipmentList();
+
+                equipmentList.remove(new Pair<>(convertedHand, nmsStack));
+
+
             } catch (Exception e) {
                 System.out.println("Can't find NPC with that ID");
             }
@@ -285,20 +312,48 @@ public class BlockEvent implements Listener {
             }
             System.out.println("---------------");*/
 
-            ServerPlayer serverPlayer = ((CraftPlayer) event.getPlayer()).getHandle();
-            ServerGamePacketListenerImpl connection = serverPlayer.connection;
+            try {
+               /* ServerPlayer serverPlayer = ((CraftPlayer) event.getPlayer()).getHandle();
+                ServerGamePacketListenerImpl connection = serverPlayer.connection;
 
-            EquipmentSlot bukkitHand = EquipmentSlot.HAND;
+                EquipmentSlot bukkitHand = EquipmentSlot.HAND;
 
-            net.minecraft.world.entity.EquipmentSlot convertedHand = CraftEquipmentSlot.getNMS(bukkitHand);
+                net.minecraft.world.entity.EquipmentSlot convertedHand = CraftEquipmentSlot.getNMS(bukkitHand);
 
-            org.bukkit.inventory.ItemStack bukkitStack = new org.bukkit.inventory.ItemStack(Material.DIAMOND);
-            ItemStack nmsStack = CraftItemStack.asNMSCopy(bukkitStack);
+                org.bukkit.inventory.ItemStack bukkitStack = new org.bukkit.inventory.ItemStack(Material.GRASS_BLOCK);
+                ItemStack nmsStack = CraftItemStack.asNMSCopy(bukkitStack);
 
-            List<Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack>> equipmentList = new ArrayList<>();
-            equipmentList.add(new Pair<>(convertedHand, nmsStack));
+                List<Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack>> equipmentList =
+                        NPCs.npcMap.get("Randy_skyblock_lobby").getEquipmentList();
+                equipmentList.add(new Pair<>(convertedHand, nmsStack));
 
-            connection.send(new ClientboundSetEquipmentPacket(randysId, equipmentList));
+
+
+//                List<Pair<net.minecraft.world.entity.EquipmentSlot, ItemStack>> emptyList = new ArrayList<>();
+//                emptyList.add(new Pair<>(net.minecraft.world.entity.EquipmentSlot.HEAD, new ItemStack(Items.NETHERITE_HELMET)));
+
+//            connection.send(new ClientboundSetEquipmentPacket(randysId, equipmentList));
+                connection.send(new ClientboundSetEquipmentPacket(
+                        randysId,
+                        NPCs.npcMap.get("Randy_skyblock_lobby").getEquipmentList()
+                ));
+*/
+
+                NPC rand = NPCs.npcMap.get("Randy_skyblock_lobby");
+                rand.equipItem(
+                        net.minecraft.world.entity.EquipmentSlot.MAINHAND,
+                        new ItemStack(Items.GOLD_BLOCK)
+                );
+
+                ServerPlayer serverPlayer = ((CraftPlayer) event.getPlayer()).getHandle();
+                ServerGamePacketListenerImpl connection = serverPlayer.connection;
+                connection.send(new ClientboundSetEquipmentPacket(rand.getId(), rand.getEquipmentList()));
+
+
+            } catch (Exception e) {
+                System.out.println("Did you forget to spawn NPC first??");
+            }
+
 
 
 
@@ -351,6 +406,140 @@ public class BlockEvent implements Listener {
 
         }
 
+
+        if (event.getBlock().getType() == Material.YELLOW_WOOL) {
+            NPC randi = NPCs.npcMap.get("Randy_skyblock_lobby");
+            randi.equipItem(
+                    net.minecraft.world.entity.EquipmentSlot.MAINHAND,
+                    ItemStack.EMPTY
+            );
+
+            ServerPlayer serverPlayer = ((CraftPlayer) event.getPlayer()).getHandle();
+            ServerGamePacketListenerImpl connection = serverPlayer.connection;
+            connection.send(new ClientboundSetEquipmentPacket(randi.getId(), randi.getEquipmentList()));
+        }
+
+
+        if (event.getBlock().getType() == Material.PURPLE_WOOL) {
+
+            NPC npc = NPCs.npcMap.get("Randy_skyblock_lobby");
+
+//            npc.setPos(-1.5, 65, -1.5);
+//            npc.setPosRaw(-1.5, 65, -1.5);
+//            double x = (double) Mth.lfloor(-1.5 * (double)4096.0F) * 2.44140625E-4;
+//            double y = (double) Mth.lfloor(-1.5 * (double)4096.0F) * 2.44140625E-4;
+
+//            npc.setPos(x, 65.0, y);
+//            npc.noPhysics = true;
+            npc.setPos(-1.0, 65, -1.5);
+
+            System.out.println(npc.position());
+
+//            npc.setXRot(-15);
+            npc.setYRot(0);
+            npc.setYHeadRot(0);
+
+            showNpcTo(npc.getId(), event.getPlayer());
+
+//            short px = (short) (0.5 * 4096);
+//            short py = (short) (0);
+//            short pz = (short) (0.5 * 4096);
+//
+////            byte ry = (byte) ((npc.getYRot() * 256.0F) / 360.0F);
+////            byte rx = (byte) ((npc.getXRot() * 256.0F) / 360.0F);
+////            byte ry = (byte) ((npc.getYRot() % 360) * 256 / 360);
+////            byte rx = (byte) ((npc.getXRot() % 360) * 256 / 360);
+//            byte ry = (byte) npc.getYRot();
+//            byte rx = (byte) npc.getXRot();
+//
+
+////            connection.send(new ClientboundMoveEntityPacket.PosRot(npc.getId(), px, py, pz, ry, rx, true));
+//
+//            connection.send(new ClientboundMoveEntityPacket.Pos(npc.getId(), px, py, pz, true));
+//
+//            var rotPack = new ClientboundMoveEntityPacket.Rot(npc.getId(), ry, rx, true);
+//            connection.send(rotPack);
+////            connection.send(new ClientboundRotateHeadPacket(npc, (byte) ((npc.getYRot() % 360) * 256 / 360)));
+////            connection.send(new ClientboundRotateHeadPacket(npc, (byte) ((npc.getYRot() * 256.0F) / 360.0F)));
+////            connection.send(new ClientboundRotateHeadPacket(npc, (byte) npc.getYRot()));
+////            connection.send(new ClientboundRotateHeadPacket(npc, (byte) npc.getYHeadRot()));
+//            var headPack = new ClientboundRotateHeadPacket(npc, ry);
+//            connection.send(headPack);
+//
+//            System.out.println("NPC: " + npc.getYRot() + ", " + npc.getYHeadRot());
+//            System.out.println("NPC: " + (byte) npc.getYRot() + ", " + (byte) npc.getYHeadRot());
+//            System.out.println("Packs: " + rotPack.getyRot() + ", " + headPack.getYHeadRot() );
+//            System.out.println("Packs: " + (byte) rotPack.getyRot() + ", " + (byte) headPack.getYHeadRot() );
+
+
+//            PositionMoveRotation positionMoveRotation = new PositionMoveRotation(npc.position(), Vec3.ZERO, npc.getYRot(), npc.getXRot());
+//
+//            ClientboundTeleportEntityPacket teleportPack = new ClientboundTeleportEntityPacket(
+//                    npc.getId(),
+//                    positionMoveRotation,
+//                    Collections.emptySet(),
+//                    true
+//            );
+//
+//            ServerPlayer serverPlayer = ((CraftPlayer) event.getPlayer()).getHandle();
+//            ServerGamePacketListenerImpl connection = serverPlayer.connection;
+//            connection.send(teleportPack);
+
+
+
+            /*NPC randee = NPCs.npcMap.get("Randy_skyblock_lobby");
+            randee.setXRot(-15);
+            randee.setYRot(100);
+            randee.setYHeadRot(100);
+
+//            randee.setPos(randee.position().add(3, 0, 3));
+
+            ServerPlayer serverPlayer = ((CraftPlayer) event.getPlayer()).getHandle();
+            ServerGamePacketListenerImpl connection = serverPlayer.connection;
+//            connection.send(new ClientboundPlayerRotationPacket(randee.getYRot(), randee.getXRot()));
+//            Vec3 newPos = new Vec3(3, 65, 3);
+            short px = (short) (randee.getX() * 4096);
+            short py = (short) (randee.getY() * 4096);
+            short pz = (short) (randee.getZ() * 4096);
+//
+//            byte ry = (byte) ((randee.getYRot() * 256.0F) / 360.0F);
+//            byte rx = (byte) ((randee.getXRot() * 256.0F) / 360.0F);
+
+
+
+//            Location nwLocation = new Location(randee.level().getWorld(), 1, 65, 1);
+            randee.setPos(1, 65, 1);
+
+
+//            connection.send(new ClientboundAddEntityPacket(randee, 0, randee.blockPosition()));
+
+            byte yRot = (byte) randee.getYRot();
+            byte xRot = (byte) randee.getXRot();
+            connection.send(new ClientboundMoveEntityPacket.PosRot(
+                    randee.getId(),
+                    px,
+                    py,
+                    pz,
+                    yRot,
+                    xRot,
+                    true
+            ));
+
+
+//            connection.send(new ClientboundMoveEntityPacket.Pos(
+//                    randee.getId(),
+//                    (short) (randee.getX() + 3),
+//                    (short) randee.yya,
+//                    (short) (randee.zza + 3),
+//                    false
+//            ));
+            connection.send(new ClientboundRotateHeadPacket(randee, (byte) ((randee.getYRot() % 360) * 256 / 360)));
+
+
+             */
+        }
+
+
     }
 
     private ClientboundPlayerInfoUpdatePacket makePlayerInfoUpdatePacket(
@@ -388,4 +577,70 @@ public class BlockEvent implements Listener {
         return (Unsafe) field.get(null);
     }
 
+
+    public void showNpcTo(int npcId, Player viewer) {
+        NPC npc = NPCs.npcMap.get(NPCs.npcIds.get(npcId));
+        if (npc == null) {
+            System.err.println("Error sending packets to show NPC: NPC is null");
+            return;
+        }
+        try {
+
+            List<SynchedEntityData.DataValue<?>> dataValuesCopy = new ArrayList<>(npc.getEntityData().getNonDefaultValues());
+            SynchedEntityData.DataValue<Byte> outerSkinLayersValue =
+                    new SynchedEntityData.DataValue<>(17, EntityDataSerializers.BYTE, (byte) 0x7F);
+            dataValuesCopy.add(outerSkinLayersValue);
+
+            EnumSet<ClientboundPlayerInfoUpdatePacket.Action> actions = EnumSet.of(
+                    ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER,
+                    ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED,
+                    ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LATENCY
+            );
+
+            ClientboundPlayerInfoUpdatePacket.Entry entry = new ClientboundPlayerInfoUpdatePacket.Entry(
+                    npc.getUUID(),
+                    npc.getGameProfile(),
+                    true,
+                    0,
+                    GameType.SURVIVAL,
+                    null,
+                    true,
+                    0,
+                    null
+            );
+
+            ServerPlayer serverPlayer = ((CraftPlayer) viewer).getHandle();
+            ServerGamePacketListenerImpl connection = serverPlayer.connection;
+
+            ClientboundPlayerInfoUpdatePacket infoUpdatePacket = makePlayerInfoUpdatePacket(actions, List.of(entry));
+
+            connection.send(infoUpdatePacket);
+            connection.send(new ClientboundAddEntityPacket(npc, 0, npc.blockPosition()));
+            connection.send(new ClientboundSetEntityDataPacket(npcId, dataValuesCopy));
+
+            if (!npc.getEquipmentList().isEmpty()) {
+                connection.send(new ClientboundSetEquipmentPacket(npcId, npc.getEquipmentList()));
+            }
+
+            PositionMoveRotation positionMoveRotation = new PositionMoveRotation(npc.position(), Vec3.ZERO, npc.getYRot(), npc.getXRot());
+            ClientboundTeleportEntityPacket teleportPack = new ClientboundTeleportEntityPacket(
+                    npc.getId(),
+                    positionMoveRotation,
+                    Collections.emptySet(),
+                    true
+            );
+            connection.send(teleportPack);
+
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                connection.send(new ClientboundPlayerInfoRemovePacket(Collections.singletonList(npc.getUUID())));
+            }, 20L);
+
+//            if (!npc.shownToPlayers.contains(viewer.getUniqueId())) {
+//                npc.shownToPlayers.add(viewer.getUniqueId());
+//            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

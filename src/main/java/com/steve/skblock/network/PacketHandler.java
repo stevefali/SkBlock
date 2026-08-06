@@ -1,14 +1,12 @@
 package com.steve.skblock.network;
 
+import com.steve.skblock.npc.NPC;
 import com.steve.skblock.npc.NPCs;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
-import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -21,6 +19,26 @@ public class PacketHandler extends ChannelDuplexHandler {
     private long lastCallTime = 0;
     private static final long COOLDOWN_MILLIS = 200;
 
+    private static final Field ID_FIELD;
+
+    static {
+        try {
+            Field idField = null;
+            for (Field field : ServerboundInteractPacket.class.getDeclaredFields()) {
+                if (field.getType() == int.class) {
+                    idField = field;
+                }
+            }
+            if (idField == null) {
+                throw new NoSuchFieldException("No field of type int found in ServerboundInteractPacket");
+            }
+            idField.setAccessible(true);
+            ID_FIELD = idField;
+        } catch (Exception e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
     public PacketHandler(Player player, Plugin plugin) {
         this.player = player;
         this.plugin = plugin;
@@ -30,29 +48,17 @@ public class PacketHandler extends ChannelDuplexHandler {
     public void channelRead(ChannelHandlerContext context, Object msg) throws Exception {
 
         if (msg instanceof ServerboundInteractPacket packet) {
-            try {
 
-                Field idField = ServerboundInteractPacket.class.getDeclaredField("b");
-                idField.setAccessible(true);
-                int id = (int) idField.get(packet);
-
-                if (NPCs.npcIds.containsKey(id)) {
-                    long now = System.currentTimeMillis();
-                    if (now - lastCallTime >= COOLDOWN_MILLIS) {
-                        lastCallTime = now;
-                        System.out.println("Interact packet! EntityId: " + id);
-
-                        Bukkit.getScheduler().runTask(plugin, () -> {
-//                    ServerLevel level = ((CraftWorld) player.getWorld()).getHandle();
-//                    System.out.println("Interact packet! IsAttack?: " + packet.isAttack());
-                            NPCs.npcMap.get(NPCs.npcIds.get(id)).speak(player);
-
-                        });
-                    }
+            int id = (int) ID_FIELD.get(packet);
+            NPC npc = NPCs.npcMap.get(NPCs.npcIds.get((id)));
+            if (npc != null) {
+                long now = System.currentTimeMillis();
+                if (now - lastCallTime >= COOLDOWN_MILLIS) {
+                    lastCallTime = now;
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        npc.speak(player);
+                    });
                 }
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
 
