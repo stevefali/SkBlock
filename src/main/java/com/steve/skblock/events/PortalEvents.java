@@ -1,5 +1,6 @@
 package com.steve.skblock.events;
 
+import com.steve.skblock.Skblock;
 import com.steve.skblock.util.TitlesUtils;
 import com.steve.skblock.worlds.SkyblockWorldFactory;
 
@@ -73,6 +74,7 @@ public class PortalEvents implements Listener {
                             })
                             .thenApply(playerWorldName -> {
                                 World skyblockWorld = Bukkit.getWorld(playerWorldName);
+                                Skblock.createNpcs(skyblockWorld);
                                 Location spawnLocation = skyblockWorld.getSpawnLocation();
                                 player.teleport(spawnLocation);
                                 TitlesUtils.sendSubtitle(player, "", 5, 10, 5);

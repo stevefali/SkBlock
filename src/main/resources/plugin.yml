@@ -2,9 +2,7 @@ name: skblock
 version: '1.0-SNAPSHOT'
 main: com.steve.skblock.Skblock
 api-version: '1.21'
-softdepend:
-  - 'Multiverse-Core'
-  - 'Multiverse-Portals'
+depend: [FastAsyncWorldEdit, MegaNPCs-core]
 commands:
     sendplayer:
       description: Send player to given world

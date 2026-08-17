@@ -18,11 +18,14 @@ repositories {
         url = "https://oss.sonatype.org/content/groups/public/"
     }
     // Multiverse
-    maven { url = "https://repo.onarandombox.com/content/groups/public/" }
+//    maven { url = "https://repo.onarandombox.com/content/groups/public/" }
 
     // FAWE
     maven {url = "https://repo.papermc.io/repository/maven-public/"}
     maven {url = "https://maven.enginehub.org/repo/"}
+
+    // MegaNpcs
+    maven { url = 'https://jitpack.io' }
 
     mavenLocal()
 }
@@ -33,13 +36,17 @@ dependencies {
 //    compileOnly("org.spigotmc:spigot:1.21.4-R0.1-SNAPSHOT")
 
     // Multiverse
-    compileOnly("org.mvplugins.multiverse.core:multiverse-core:5.0.0-SNAPSHOT")
+//    compileOnly("org.mvplugins.multiverse.core:multiverse-core:5.0.0-SNAPSHOT")
     // Multiverse-portals
 //    compileOnly("org.mvplugins.multiverse.portals:multiverse-portals:5.1.0-SNAPSHOT")
     // FAWE
     implementation(platform("com.intellectualsites.bom:bom-newest:1.52")) // Ref: https://github.com/IntellectualSites/bom
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit")
+
+    // MegaNpcs
+    compileOnly("com.github.stevefali:MegaNpcs:v1.1.1")
+
 }
 
 

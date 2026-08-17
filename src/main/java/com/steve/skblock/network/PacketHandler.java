@@ -1,7 +1,5 @@
 package com.steve.skblock.network;
 
-import com.steve.skblock.npc.NPC;
-import com.steve.skblock.npc.NPCs;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
@@ -13,6 +11,7 @@ import org.bukkit.plugin.Plugin;
 import java.lang.reflect.Field;
 
 public class PacketHandler extends ChannelDuplexHandler {
+/*
 
     private final Player player;
     private Plugin plugin;
@@ -72,5 +71,6 @@ public class PacketHandler extends ChannelDuplexHandler {
         super.write(context, msg, promise);
     }
 
+*/
 
 }

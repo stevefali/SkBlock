@@ -2,6 +2,7 @@ package com.steve.skblock.worlds;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Dynamic;
+import com.steve.skblock.Skblock;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -51,7 +52,6 @@ public class SkyblockWorldFactory {
     private static final String SKYBLOCK_WORLDS_PATH = "./SkyblockWorlds";
     private static final String WORLD_NAME_PREFIX = "skyblock_";
     private static final String BACKUP_WORLDS_FOLDER = "./BackupWorlds";
-
 
 
     public static CompletableFuture<String> loadPlayerWorld(String worldNameSuffix, Plugin plugin) {
@@ -189,7 +189,10 @@ public class SkyblockWorldFactory {
     public static CompletableFuture<DeletionResult> deleteWorld(String worldNameSuffix, Plugin plugin) {
         CompletableFuture<DeletionResult> future = new CompletableFuture<>();
 
-        Bukkit.unloadWorld(WORLD_NAME_PREFIX + worldNameSuffix, false);
+        String worldName = WORLD_NAME_PREFIX + worldNameSuffix;
+        Skblock.getNpcService().removeAllNpcsInWorld(worldName);
+        Skblock.getNpcIds().remove(worldName);
+        Bukkit.unloadWorld(worldName, false);
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             try {

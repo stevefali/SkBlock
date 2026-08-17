@@ -12,7 +12,7 @@ import org.bukkit.plugin.Plugin;
 import java.lang.reflect.Field;
 
 public class PacketListenerInjector {
-    private static final String HANDLER_NAME_PREFIX = "packet_listener_";
+   /* private static final String HANDLER_NAME_PREFIX = "packet_listener_";
 
     public static void inject(Player player, Plugin plugin) {
         String handlerName = HANDLER_NAME_PREFIX + player.getUniqueId();
@@ -68,6 +68,6 @@ public class PacketListenerInjector {
             e.printStackTrace();
             return null;
         }
-    }
+    }*/
 
 }
