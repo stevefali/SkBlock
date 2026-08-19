@@ -4,7 +4,6 @@ import com.steve.MegaNPCs.api.NpcService;
 import com.steve.skblock.commands.*;
 import com.steve.skblock.events.*;
 import com.steve.skblock.npc.NpcFactory;
-import com.steve.skblock.util.ProxyTeleport;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
@@ -31,7 +30,6 @@ public final class Skblock extends JavaPlugin {
     private Logger logger;
 
     private static final Map<String, List<UUID>> NPC_IDS = new HashMap<>();
-    private static final double NPC_TITLE_SCALE = 2.0;
     private static final String SKYBLOCK_LOBBY_NAME = "skyblock_lobby";
 
 
@@ -39,7 +37,6 @@ public final class Skblock extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-
 
         npcService = Bukkit.getServicesManager().load(NpcService.class);
         lobbySpawn = new Location(Bukkit.getWorld(SKYBLOCK_LOBBY_NAME), 0.5, 65, 0.5, 30.0F, 0.0F);
@@ -56,7 +53,8 @@ public final class Skblock extends JavaPlugin {
         getServer().getPluginManager().registerEvents(cobbleGenerationEvent, this);
         getServer().getPluginManager().registerEvents(blockEvent, this);
         getServer().getPluginManager().registerEvents(portalEvents, this);
-        getServer().getPluginManager().registerEvents(new WorldEvent(), this);
+        getServer().getPluginManager().registerEvents(new WorldEvent(this), this);
+        getServer().getPluginManager().registerEvents(new InventoryEvent(this), this);
 
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -77,7 +75,7 @@ public final class Skblock extends JavaPlugin {
         }
 
         for (World world : Bukkit.getWorlds()) {
-            createNpcs(world);
+            NpcFactory.createNpcs(world, plugin);
             if (npcService.getNpcsInWorld(world.getName()) != null) {
                 for (Player player : world.getPlayers()) {
                     NpcFactory.showNPCs(world.getName(), player);
@@ -106,55 +104,15 @@ public final class Skblock extends JavaPlugin {
 
     }
 
-
-    public static void createNpcs(World world) {
-        String worldName = world.getName();
-
-        if (NPC_IDS.get(worldName) == null) {
-            List<UUID> worldNpcIds = new ArrayList<>();
-
-            if (worldName.equals("skyblock_lobby") && npcService != null) {
-
-                UUID megId = NpcFactory.makeNpc(
-                        new Location(world, -6.5, 65.5, 5.5, -105.0F, 8.0F),
-                        "Meg",
-                        "Meg", player -> {
-                            ProxyTeleport.teleportPlayer(plugin, player, ProxyTeleport.LOBBY_SERVER);
-                        },
-                        "§6Meg \n§aMain Lobby",
-                        NPC_TITLE_SCALE
-                );
-                worldNpcIds.add(megId);
-                npcService.setDefaultNameVisible(megId, false);
-
-            } else {
-
-                // Skyblock worlds
-                UUID randyId = NpcFactory.makeNpc(
-                        new Location(world, -3.5, 65, -3.5, -40.0F, 0.0F),
-                        "Randy",
-                        "Randy",
-                        player -> {
-                            player.sendMessage("Welcome to your skyblock World, " + player.getName());
-                            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                                player.teleport(lobbySpawn);
-                            }, 40L);
-                        },
-                        null,
-                        NPC_TITLE_SCALE,
-                        "§6Randy", "§aSkyblock Lobby"
-                );
-                worldNpcIds.add(randyId);
-            }
-            NPC_IDS.put(worldName, worldNpcIds);
-        }
-    }
-
     public static NpcService getNpcService() {
         return npcService;
     }
 
     public static Map<String, List<UUID>> getNpcIds() {
         return NPC_IDS;
+    }
+
+    public static Location getLobbySpawn() {
+        return lobbySpawn;
     }
 }

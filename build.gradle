@@ -45,7 +45,7 @@ dependencies {
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit")
 
     // MegaNpcs
-    compileOnly("com.github.stevefali:MegaNpcs:v1.1.1")
+    compileOnly("com.github.stevefali:MegaNpcs:v1.1.2")
 
 }
 
