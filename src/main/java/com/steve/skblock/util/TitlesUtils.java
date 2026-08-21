@@ -25,7 +25,13 @@ public class TitlesUtils {
         connection.send(new ClientboundSetTitlesAnimationPacket(fadeIn, stay, fadeOut));
     }
 
-    public static void sendTitleAndSubtitle(Player player, String titleText, String subtitleText, int fadeIn, int stay, int fadeOut) {
+    public static void sendTitleAndSubtitle(
+            Player player,
+            String titleText,
+            String subtitleText,
+            int fadeIn,
+            int stay,
+            int fadeOut) {
         ServerGamePacketListenerImpl connection = getConnection(player);
 
         connection.send(new ClientboundSetTitleTextPacket(Component.literal(titleText)));

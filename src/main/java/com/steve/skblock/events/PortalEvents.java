@@ -1,10 +1,7 @@
 package com.steve.skblock.events;
 
-import com.steve.skblock.Skblock;
-import com.steve.skblock.npc.NpcFactory;
 import com.steve.skblock.util.TitlesUtils;
-import com.steve.skblock.worlds.SkyblockWorldFactory;
-
+import com.steve.skblock.util.teleport.SkyblockWorldTeleport;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -40,10 +37,11 @@ public class PortalEvents implements Listener {
     public void onPortalEnter(EntityPortalEnterEvent event) {
         if (event.getEntityType() == EntityType.PLAYER) {
             Player player = (Player) event.getEntity();
-            if (event.getLocation().getWorld().getName().equals("skyblock_lobby") && event.getLocation().getBlockZ() == 15) {
+            if (event.getLocation().getWorld().getName().equals("skyblock_lobby")
+                    && event.getLocation().getBlockZ() == 15) {
                 if (checkIsPlayerCooled(player.getUniqueId())) {
 
-                    TitlesUtils.sendSubtitle(player, "§9Preparing your island...", 5, 30, 5);
+                    TitlesUtils.sendSubtitle(player, "§9Preparing your island...",  5, 30, 5);
 
                     setPlayerCooldown(player.getUniqueId());
                 }
@@ -66,22 +64,7 @@ public class PortalEvents implements Listener {
                     Location lobbySpawn = new Location(lobbyWorld, 0, 65, 0);
                     player.teleport(lobbySpawn);
                 } else {
-                    String playerId = player.getUniqueId().toString();
-                    SkyblockWorldFactory.loadPlayerWorld(playerId, plugin)
-                            .exceptionally(throwable -> {
-                                player.sendMessage("§eThere was an error loading your world");
-                                throwable.printStackTrace();
-                                return null;
-                            })
-                            .thenApply(playerWorldName -> {
-                                World skyblockWorld = Bukkit.getWorld(playerWorldName);
-                                NpcFactory.createNpcs(skyblockWorld, plugin);
-                                Location spawnLocation = skyblockWorld.getSpawnLocation();
-                                player.teleport(spawnLocation);
-                                TitlesUtils.sendSubtitle(player, "", 5, 10, 5);
-                                TitlesUtils.sendTitle(player, "§aWelcome to your Island!", 7, 30, 7);
-                                return playerWorldName;
-                            });
+                    SkyblockWorldTeleport.sendPlayerToSkyblockWorld(player, plugin);
                 }
 
             } else if (event.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL

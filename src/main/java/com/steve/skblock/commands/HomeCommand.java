@@ -1,6 +1,6 @@
 package com.steve.skblock.commands;
 
-import com.steve.skblock.util.ProxyTeleport;
+import com.steve.skblock.util.teleport.ProxyTeleport;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,7 +18,11 @@ public class HomeCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NonNull @NotNull String[] strings) {
+    public boolean onCommand(
+            @NotNull CommandSender commandSender,
+            @NotNull Command command,
+            @NotNull String s,
+            @NonNull @NotNull String[] strings) {
 
         if (!(commandSender instanceof Player player)) {
             return false;

@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
+import java.util.UUID;
 
 
 public class PlayerEvent implements Listener {
@@ -36,10 +37,7 @@ public class PlayerEvent implements Listener {
     void onPlayerJoin(PlayerJoinEvent event) {
 
         Player player = event.getPlayer();
-
-        if (!player.getWorld().getName().equals(SKYBLOCK_LOBBY_NAME)) {
-            player.teleport(lobbySpawn);
-        }
+        player.teleport(lobbySpawn);
 
         NpcFactory.showNPCs(player.getWorld().getName(), player);
 
@@ -58,16 +56,20 @@ public class PlayerEvent implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        UUID playerId = event.getPlayer().getUniqueId();
+
 
         String worldName = WORLD_NAME_PREFIX + event.getPlayer().getUniqueId();
         removeWorldNpcs(worldName);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (Bukkit.getWorld(worldName) != null) {
-                if (Bukkit.getWorld(worldName).getPlayers().isEmpty()) {
+                if (Bukkit.getWorld(worldName).getPlayers().isEmpty()
+                        && Bukkit.getPlayer(playerId) == null
+                ) {
                     Bukkit.unloadWorld(worldName, true);
                 }
             }
-        }, 20L);
+        }, 600L);
     }
 
     @EventHandler
@@ -77,6 +79,7 @@ public class PlayerEvent implements Listener {
 
         if (toWorld.getName().equals(SKYBLOCK_LOBBY_NAME)) {
             player.teleport(lobbySpawn);
+            TitlesUtils.sendTitleAndSubtitle(player, "§6Skyblock Lobby", "", 7, 40, 7);
         }
 
         NpcFactory.showNPCs(toWorld.getName(), player);

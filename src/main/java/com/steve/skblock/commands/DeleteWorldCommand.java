@@ -24,7 +24,11 @@ public class DeleteWorldCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            @NotNull String[] args) {
 
 
         if (args.length == 1) {
@@ -46,10 +50,16 @@ public class DeleteWorldCommand implements CommandExecutor, TabCompleter {
         }
 
         return true;
-    };
+    }
+
+    ;
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @Nullable List<String> onTabComplete(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            @NotNull String[] args) {
 
         if (args.length == 1) {
             File worldsFolder = new File("./SkyblockWorlds");

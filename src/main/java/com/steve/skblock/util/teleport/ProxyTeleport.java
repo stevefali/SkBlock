@@ -1,4 +1,4 @@
-package com.steve.skblock.util;
+package com.steve.skblock.util.teleport;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;

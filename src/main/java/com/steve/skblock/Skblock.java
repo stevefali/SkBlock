@@ -3,6 +3,7 @@ package com.steve.skblock;
 import com.steve.MegaNPCs.api.NpcService;
 import com.steve.skblock.commands.*;
 import com.steve.skblock.events.*;
+import com.steve.skblock.menu.MenuProvider;
 import com.steve.skblock.npc.NpcFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
@@ -33,7 +34,6 @@ public final class Skblock extends JavaPlugin {
     private static final String SKYBLOCK_LOBBY_NAME = "skyblock_lobby";
 
 
-
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -54,7 +54,7 @@ public final class Skblock extends JavaPlugin {
         getServer().getPluginManager().registerEvents(blockEvent, this);
         getServer().getPluginManager().registerEvents(portalEvents, this);
         getServer().getPluginManager().registerEvents(new WorldEvent(this), this);
-        getServer().getPluginManager().registerEvents(new InventoryEvent(this), this);
+        getServer().getPluginManager().registerEvents(new InventoryEvent(), this);
 
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -65,6 +65,8 @@ public final class Skblock extends JavaPlugin {
         getCommand("loadworld").setExecutor(new LoadWorldCommand(this));
         getCommand("lobby").setExecutor(new LobbyCommand());
         getCommand("home").setExecutor(new HomeCommand(this));
+
+        MenuProvider.register(this);
 
 
         World skyblockLobbyWorld = Bukkit.getWorld("skyblock_lobby");

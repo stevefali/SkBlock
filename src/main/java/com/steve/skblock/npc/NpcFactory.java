@@ -2,8 +2,9 @@ package com.steve.skblock.npc;
 
 import com.steve.MegaNPCs.api.NpcService;
 import com.steve.skblock.Skblock;
-import com.steve.skblock.util.ProxyTeleport;
-import org.bukkit.Bukkit;
+import com.steve.skblock.menu.InventoryMenu;
+import com.steve.skblock.menu.MenuProvider;
+import com.steve.skblock.util.TitlesUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -38,7 +39,8 @@ public class NpcFactory {
                         new Location(world, -6.5, 65.5, 5.5, -105.0F, 8.0F),
                         "Meg",
                         "Meg", player -> {
-                            ProxyTeleport.teleportPlayer(plugin, player, ProxyTeleport.LOBBY_SERVER);
+                            InventoryMenu inventoryMenu = MenuProvider.getMenu(MenuProvider.LOBBY_MENU_KEY);
+                            player.openInventory(inventoryMenu.getInventory());
                         },
                         "§6Meg \n§aMain Lobby",
                         NPC_TITLE_SCALE
@@ -54,14 +56,18 @@ public class NpcFactory {
                         "Randy",
                         "Randy",
                         player -> {
-                            player.sendMessage("Welcome to your skyblock World, " + player.getName());
-                            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                                player.teleport(Skblock.getLobbySpawn());
-                            }, 40L);
+                            TitlesUtils.sendSubtitle(player, "Welcome to your skyblock World, " + player.getName(), 7, 30, 7);
+                            InventoryMenu inventoryMenu = MenuProvider.getMenu(MenuProvider.SKYBLOCK_MENU_KEY);
+                            player.openInventory(inventoryMenu.getInventory());
+//                            Bukkit.getScheduler().runTaskLater(
+//                                    plugin, () -> {
+//                                        player.teleport(Skblock.getLobbySpawn());
+//                                    }, 40L
+//                            );
                         },
                         null,
                         NPC_TITLE_SCALE,
-                        "§6Randy", "§aSkyblock Lobby"
+                        "§aSkyblock Menu", "§6Randy"
                 );
                 worldNpcIds.add(randyId);
             }
@@ -70,7 +76,14 @@ public class NpcFactory {
         npcService.removeOrphansFromWorld(worldName);
     }
 
-    public static UUID makeNpc(Location location, String displayName, String skinName, @Nullable Consumer<Player> onInteract, @Nullable String title, double titleScale , String... nameLines) {
+    public static UUID makeNpc(
+            Location location,
+            String displayName,
+            String skinName,
+            @Nullable Consumer<Player> onInteract,
+            @Nullable String title,
+            double titleScale,
+            String... nameLines) {
         NpcService npcService = Skblock.getNpcService();
         UUID npcId = npcService.createNpc(
                 location,

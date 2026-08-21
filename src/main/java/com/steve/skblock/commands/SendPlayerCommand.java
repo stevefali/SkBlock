@@ -23,7 +23,11 @@ public class SendPlayerCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            @NotNull String[] args) {
 
         if (args.length < 1) {
             sender.sendMessage("Please specify a world and player");
@@ -59,12 +63,17 @@ public class SendPlayerCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public @Nullable List<String> onTabComplete(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            @NotNull String[] args) {
 
         if (args.length == 1) {
             List<String> worldNames = plugin.getServer().getWorlds().stream().map(WorldInfo::getName).toList();
             return worldNames;
-        } if (args.length == 2){
+        }
+        if (args.length == 2) {
             List<String> onlinePlayers = plugin.getServer().getOnlinePlayers().stream().map(Player::getName).toList();
             return onlinePlayers;
         }

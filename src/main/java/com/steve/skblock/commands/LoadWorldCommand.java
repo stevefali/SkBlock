@@ -17,7 +17,11 @@ public class LoadWorldCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            @NotNull String[] args) {
 
 
         if (args.length == 1) {
@@ -36,7 +40,7 @@ public class LoadWorldCommand implements CommandExecutor {
                                 return null;
                             }
                         });
-                        return true;
+                return true;
             } catch (Exception e) {
                 sender.sendMessage("§eError loading world: " + e.getMessage());
                 return false;
