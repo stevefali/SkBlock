@@ -2,6 +2,7 @@ package com.steve.skblock.util.teleport;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.steve.skblock.util.TitlesUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -13,7 +14,7 @@ public class ProxyTeleport {
 
     public static void teleportPlayer(Plugin plugin, Player player, String serverName) {
         if (player != null) {
-            player.sendMessage("Sending you to " + serverName + "...");
+            TitlesUtils.sendSubtitle(player, "Sending you to main lobby...", 5, 30, 5);
 
             ByteArrayDataOutput out = ByteStreams.newDataOutput();
             out.writeUTF("Connect");

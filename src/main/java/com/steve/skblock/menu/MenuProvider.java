@@ -41,7 +41,6 @@ public class MenuProvider {
                 List.of("Click to teleport"),
                 event -> {
                     Player player = (Player) event.getWhoClicked();
-                    TitlesUtils.sendSubtitle(player, "§9Sending you to main lobby...", 5, 30, 5);
                     player.closeInventory();
                     ProxyTeleport.teleportPlayer(plugin, player, ProxyTeleport.LOBBY_SERVER);
                 }
