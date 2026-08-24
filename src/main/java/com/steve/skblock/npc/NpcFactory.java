@@ -5,6 +5,7 @@ import com.steve.skblock.Skblock;
 import com.steve.skblock.menu.InventoryMenu;
 import com.steve.skblock.menu.MenuProvider;
 import com.steve.skblock.util.TitlesUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -73,7 +74,9 @@ public class NpcFactory {
             }
             Skblock.getNpcIds().put(worldName, worldNpcIds);
         }
-        npcService.removeOrphansFromWorld(worldName);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            npcService.removeOrphansFromWorld(worldName);
+        }, 20L);
     }
 
     public static UUID makeNpc(

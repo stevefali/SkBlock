@@ -1,4 +1,4 @@
-package com.steve.skblock.events;
+package com.steve.skblock.events.unrouted;
 
 import com.steve.skblock.util.TitlesUtils;
 import com.steve.skblock.util.teleport.SkyblockWorldTeleport;

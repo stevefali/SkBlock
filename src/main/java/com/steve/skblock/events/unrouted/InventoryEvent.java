@@ -1,4 +1,4 @@
-package com.steve.skblock.events;
+package com.steve.skblock.events.unrouted;
 
 import com.steve.skblock.menu.InventoryMenu;
 import org.bukkit.event.EventHandler;

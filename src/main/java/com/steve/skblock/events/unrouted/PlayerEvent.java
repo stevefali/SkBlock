@@ -1,4 +1,4 @@
-package com.steve.skblock.events;
+package com.steve.skblock.events.unrouted;
 
 import com.steve.skblock.Skblock;
 import com.steve.skblock.npc.NpcFactory;
@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
@@ -45,16 +44,6 @@ public class PlayerEvent implements Listener {
     }
 
     @EventHandler
-    public void onInteractWithEntity(PlayerInteractEntityEvent event) {
-//        Entity entity = event.getRightClicked();
-//        if (entity instanceof Player player) {
-//            if (Objects.equals(((CraftEntity) player).getCustomName(), "§aRandy")) {
-//                event.getPlayer().sendMessage("§6 That worked");
-//            }
-//        }
-    }
-
-    @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         UUID playerId = event.getPlayer().getUniqueId();
 
@@ -62,14 +51,16 @@ public class PlayerEvent implements Listener {
         String worldName = WORLD_NAME_PREFIX + event.getPlayer().getUniqueId();
         removeWorldNpcs(worldName);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (Bukkit.getWorld(worldName) != null) {
-                if (Bukkit.getWorld(worldName).getPlayers().isEmpty()
+            World world = Bukkit.getWorld(worldName);
+            if (world != null) {
+                if (world.getPlayers().isEmpty()
                         && Bukkit.getPlayer(playerId) == null
                 ) {
+                    Skblock.getSessionRegistry().getSession(world).saveAll();
                     Bukkit.unloadWorld(worldName, true);
                 }
             }
-        }, 600L);
+        }, 20L * 30);
     }
 
     @EventHandler
@@ -88,6 +79,7 @@ public class PlayerEvent implements Listener {
     private void removeWorldNpcs(String worldName) {
         Skblock.getNpcService().removeAllNpcsInWorld(worldName);
         Skblock.getNpcIds().remove(worldName);
+        Skblock.getNpcService().removeOrphansFromWorld(worldName);
     }
 
 

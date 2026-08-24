@@ -1,12 +1,14 @@
 package com.steve.skblock.menu;
 
 import com.steve.skblock.Skblock;
+import com.steve.skblock.game.SessionRegistry;
 import com.steve.skblock.util.TitlesUtils;
 import com.steve.skblock.util.teleport.ProxyTeleport;
 import com.steve.skblock.util.teleport.SkyblockWorldTeleport;
 import com.steve.skblock.worlds.WorldDeleter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +19,10 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
+
+import static com.steve.skblock.worlds.SkyblockWorldFactory.WORLD_NAME_PREFIX;
 
 public class MenuProvider {
 
@@ -27,6 +32,8 @@ public class MenuProvider {
     private static final Map<String, InventoryMenu> inventoryMenus = new HashMap<>();
 
     public static void register(Plugin plugin) {
+
+        SessionRegistry sessionRegistry = Skblock.getSessionRegistry();
 
         InventoryMenu skyblockMenu = new InventoryMenu(9 * 3, "Skyblock Menu");
         InventoryMenu lobbyMenu = new InventoryMenu(9 * 3, "Lobby Menu");
@@ -85,6 +92,8 @@ public class MenuProvider {
                 event -> {
                     Player player = (Player) event.getWhoClicked();
                     TitlesUtils.sendSubtitle(player, "§9Sending you to Skblock lobby", 5, 30, 5);
+                    World skyblockWorld = getSkyblockWorldByOwner(player.getUniqueId());
+                    sessionRegistry.getSession(skyblockWorld).saveDirty();
                     player.teleport(Skblock.getLobbySpawn());
                 }
         );
@@ -132,6 +141,14 @@ public class MenuProvider {
         return itemStack.hasItemMeta()
                 ? itemStack.getItemMeta()
                 : Bukkit.getItemFactory().getItemMeta(itemStack.getType());
+    }
+
+    private static World getSkyblockWorldByOwner(UUID playerId) {
+        World world = Bukkit.getWorld( WORLD_NAME_PREFIX + playerId.toString());
+        if (world == null) {
+            throw new NullPointerException("World  with name " + WORLD_NAME_PREFIX + playerId.toString() + " is null");
+        }
+        return world;
     }
 
 }

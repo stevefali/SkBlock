@@ -1,36 +1,42 @@
-package com.steve.skblock.events;
+package com.steve.skblock.events.routed;
 
-import com.steve.skblock.Skblock;
-import com.steve.skblock.menu.InventoryMenu;
-import org.bukkit.Bukkit;
+import com.steve.skblock.game.SessionRegistry;
+import com.steve.skblock.game.SkyblockSession;
+import com.steve.skblock.game.data.DataKeys;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
-
-import java.util.*;
 
 public class BlockEvent implements Listener {
 
-    private Plugin plugin;
-    private static final String BUNGEE_CHANNEL = "BungeeCord";
+    private final Plugin plugin;
+    private final SessionRegistry sessionRegistry;
 
 
-    public BlockEvent(Plugin plugin) {
+    public BlockEvent(Plugin plugin, SessionRegistry sessionRegistry) {
         this.plugin = plugin;
+        this.sessionRegistry = sessionRegistry;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
+
+        SkyblockSession session = sessionRegistry.getSession(event.getBlock().getWorld());
+        if (session != null) {
+            session.onBlockBreak(event);
+            return;
+        }
 
         Material type = event.getBlock().getType();
         Player player = event.getPlayer();
+
+        if (type == Material.BLACK_WOOL) {
+            player.sendMessage("You broke that in the lobby!");
+            
+        }
 
         /*if (type == Material.CRYING_OBSIDIAN) {
             System.out.println("Counting entities....");
@@ -65,11 +71,6 @@ public class BlockEvent implements Listener {
             Skblock.getNpcIds().remove(world.getName());
             Skblock.getNpcService().removeAllNpcsInWorld(world.getName());
         }*/
-
-        if (type == Material.BLACK_WOOL) {
-
-
-        }
 
 
     }

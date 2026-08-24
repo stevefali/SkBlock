@@ -1,6 +1,7 @@
-package com.steve.skblock.events;
+package com.steve.skblock.events.unrouted;
 
 import com.steve.skblock.Skblock;
+import com.steve.skblock.game.SessionRegistry;
 import com.steve.skblock.npc.NpcFactory;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -12,9 +13,11 @@ import org.bukkit.plugin.Plugin;
 public class WorldEvent implements Listener {
 
     private final Plugin plugin;
+    private final SessionRegistry sessionRegistry;
 
-    public WorldEvent(Plugin plugin) {
+    public WorldEvent(Plugin plugin, SessionRegistry sessionRegistry) {
         this.plugin = plugin;
+        this.sessionRegistry = sessionRegistry;
     }
 
     @EventHandler
@@ -33,6 +36,7 @@ public class WorldEvent implements Listener {
 
         Skblock.getNpcIds().remove(worldName);
         Skblock.getNpcService().removeAllNpcsInWorld(worldName);
+        sessionRegistry.unregister(event.getWorld());
     }
 
 }

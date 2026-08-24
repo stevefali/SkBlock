@@ -2,7 +2,16 @@ package com.steve.skblock;
 
 import com.steve.MegaNPCs.api.NpcService;
 import com.steve.skblock.commands.*;
-import com.steve.skblock.events.*;
+import com.steve.skblock.events.routed.BlockEvent;
+import com.steve.skblock.events.routed.CobbleGenerationEvent;
+import com.steve.skblock.events.unrouted.InventoryEvent;
+import com.steve.skblock.events.unrouted.PlayerEvent;
+import com.steve.skblock.events.unrouted.PortalEvents;
+import com.steve.skblock.events.unrouted.WorldEvent;
+import com.steve.skblock.game.SessionRegistry;
+import com.steve.skblock.game.SkyblockSession;
+import com.steve.skblock.game.data.NbtSkyblockDataStore;
+import com.steve.skblock.game.data.SkyblockDataStore;
 import com.steve.skblock.menu.MenuProvider;
 import com.steve.skblock.npc.NpcFactory;
 import org.bukkit.Bukkit;
@@ -11,7 +20,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -27,9 +35,10 @@ public final class Skblock extends JavaPlugin {
 
     private static NpcService npcService;
     private static Location lobbySpawn;
-    private static Plugin plugin;
     private Logger logger;
 
+    private static final SkyblockDataStore skyblockDataStore = new NbtSkyblockDataStore();
+    private static final SessionRegistry sessionRegistry = new SessionRegistry(skyblockDataStore);
     private static final Map<String, List<UUID>> NPC_IDS = new HashMap<>();
     private static final String SKYBLOCK_LOBBY_NAME = "skyblock_lobby";
 
@@ -40,12 +49,11 @@ public final class Skblock extends JavaPlugin {
 
         npcService = Bukkit.getServicesManager().load(NpcService.class);
         lobbySpawn = new Location(Bukkit.getWorld(SKYBLOCK_LOBBY_NAME), 0.5, 65, 0.5, 30.0F, 0.0F);
-        plugin = this;
         logger = this.getLogger();
 
         playerEvent = new PlayerEvent(this, lobbySpawn);
         cobbleGenerationEvent = new CobbleGenerationEvent(this);
-        blockEvent = new BlockEvent(this);
+        blockEvent = new BlockEvent(this, sessionRegistry);
         portalEvents = new PortalEvents(this);
 
 
@@ -53,7 +61,7 @@ public final class Skblock extends JavaPlugin {
         getServer().getPluginManager().registerEvents(cobbleGenerationEvent, this);
         getServer().getPluginManager().registerEvents(blockEvent, this);
         getServer().getPluginManager().registerEvents(portalEvents, this);
-        getServer().getPluginManager().registerEvents(new WorldEvent(this), this);
+        getServer().getPluginManager().registerEvents(new WorldEvent(this, sessionRegistry), this);
         getServer().getPluginManager().registerEvents(new InventoryEvent(), this);
 
 
@@ -69,7 +77,7 @@ public final class Skblock extends JavaPlugin {
         MenuProvider.register(this);
 
 
-        World skyblockLobbyWorld = Bukkit.getWorld("skyblock_lobby");
+        World skyblockLobbyWorld = Bukkit.getWorld(SKYBLOCK_LOBBY_NAME);
         if (skyblockLobbyWorld != null) {
             skyblockLobbyWorld.setSpawnLocation(lobbySpawn);
             skyblockLobbyWorld.setPVP(false);
@@ -77,14 +85,19 @@ public final class Skblock extends JavaPlugin {
         }
 
         for (World world : Bukkit.getWorlds()) {
-            NpcFactory.createNpcs(world, plugin);
+            NpcFactory.createNpcs(world, this);
             if (npcService.getNpcsInWorld(world.getName()) != null) {
                 for (Player player : world.getPlayers()) {
                     NpcFactory.showNPCs(world.getName(), player);
                 }
             }
+
+            if (!world.getName().equals(SKYBLOCK_LOBBY_NAME)) {
+                sessionRegistry.createSession(world);
+            }
         }
 
+        sessionRegistry.scheduleAutoSaves(this);
     }
 
     @Override
@@ -95,10 +108,20 @@ public final class Skblock extends JavaPlugin {
         for (World world : Bukkit.getWorlds()) {
             npcService.removeAllNpcsInWorld(world.getName());
             logger.info("Removed NPCs for world " + world.getName());
+
+            if (!world.getName().equals(SKYBLOCK_LOBBY_NAME)) {
+                SkyblockSession skyblockSession = sessionRegistry.getSession(world);
+                if (skyblockSession != null) {
+                    skyblockSession.saveDirty();
+                }
+            }
+            npcService.removeOrphansFromWorld(world.getName());
         }
         NPC_IDS.clear();
         npcService = null;
 
+        sessionRegistry.stopAutoSaves();
+        sessionRegistry.unregisterAll();
 
         getServer().getMessenger().unregisterOutgoingPluginChannel(this);
 
@@ -117,4 +140,10 @@ public final class Skblock extends JavaPlugin {
     public static Location getLobbySpawn() {
         return lobbySpawn;
     }
+
+    public static SessionRegistry getSessionRegistry() {
+        return sessionRegistry;
+    }
+
+
 }

@@ -1,5 +1,7 @@
 package com.steve.skblock.util.teleport;
 
+import com.steve.skblock.Skblock;
+import com.steve.skblock.game.SkyblockSession;
 import com.steve.skblock.npc.NpcFactory;
 import com.steve.skblock.util.TitlesUtils;
 import com.steve.skblock.worlds.SkyblockWorldFactory;
@@ -21,6 +23,7 @@ public class SkyblockWorldTeleport {
                 })
                 .thenApply(playerWorldName -> {
                     World skyblockWorld = Bukkit.getWorld(playerWorldName);
+                    Skblock.getSessionRegistry().createSession(skyblockWorld);
                     NpcFactory.createNpcs(skyblockWorld, plugin);
                     Location spawnLocation = skyblockWorld.getSpawnLocation();
                     player.teleport(spawnLocation);
