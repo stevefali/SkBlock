@@ -1,13 +1,11 @@
 package com.steve.skblock;
 
+import com.steve.MegaHUD.api.MegaHudService;
 import com.steve.MegaNPCs.api.NpcService;
 import com.steve.skblock.commands.*;
 import com.steve.skblock.events.routed.BlockEvent;
 import com.steve.skblock.events.routed.CobbleGenerationEvent;
-import com.steve.skblock.events.unrouted.InventoryEvent;
-import com.steve.skblock.events.unrouted.PlayerEvent;
-import com.steve.skblock.events.unrouted.PortalEvents;
-import com.steve.skblock.events.unrouted.WorldEvent;
+import com.steve.skblock.events.unrouted.*;
 import com.steve.skblock.game.SessionRegistry;
 import com.steve.skblock.game.SkyblockSession;
 import com.steve.skblock.game.data.NbtSkyblockDataStore;
@@ -34,6 +32,7 @@ public final class Skblock extends JavaPlugin {
     private PortalEvents portalEvents;
 
     private static NpcService npcService;
+    private static MegaHudService megaHudService;
     private static Location lobbySpawn;
     private Logger logger;
 
@@ -48,6 +47,7 @@ public final class Skblock extends JavaPlugin {
         // Plugin startup logic
 
         npcService = Bukkit.getServicesManager().load(NpcService.class);
+        megaHudService = Bukkit.getServicesManager().load(MegaHudService.class);
         lobbySpawn = new Location(Bukkit.getWorld(SKYBLOCK_LOBBY_NAME), 0.5, 65, 0.5, 30.0F, 0.0F);
         logger = this.getLogger();
 
@@ -63,6 +63,7 @@ public final class Skblock extends JavaPlugin {
         getServer().getPluginManager().registerEvents(portalEvents, this);
         getServer().getPluginManager().registerEvents(new WorldEvent(this, sessionRegistry), this);
         getServer().getPluginManager().registerEvents(new InventoryEvent(), this);
+        getServer().getPluginManager().registerEvents(new MegaHudEvent(), this);
 
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -123,6 +124,8 @@ public final class Skblock extends JavaPlugin {
         sessionRegistry.stopAutoSaves();
         sessionRegistry.unregisterAll();
 
+        megaHudService = null;
+
         getServer().getMessenger().unregisterOutgoingPluginChannel(this);
 
         HandlerList.unregisterAll(this);
@@ -143,6 +146,10 @@ public final class Skblock extends JavaPlugin {
 
     public static SessionRegistry getSessionRegistry() {
         return sessionRegistry;
+    }
+
+    public static MegaHudService getMegaHudService() {
+        return megaHudService;
     }
 
 

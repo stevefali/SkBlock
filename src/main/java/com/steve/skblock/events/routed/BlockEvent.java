@@ -1,5 +1,7 @@
 package com.steve.skblock.events.routed;
 
+import com.steve.MegaHUD.api.MegaHudService;
+import com.steve.MegaHUD.api.SidebarLine;
 import com.steve.skblock.Skblock;
 import com.steve.skblock.game.SessionRegistry;
 import com.steve.skblock.game.SkyblockSession;
@@ -15,7 +17,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class BlockEvent implements Listener {
@@ -44,43 +48,62 @@ public class BlockEvent implements Listener {
         if (type == Material.BLACK_WOOL) {
             player.sendMessage("You broke that in the lobby!");
 
-           /* ScoreboardManager manager = Bukkit.getScoreboardManager();
-            Scoreboard scoreboard = manager.getMainScoreboard();
+        }
 
-            Objective objective = scoreboard.registerNewObjective("test", "anything", "Skyblock");
-            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        MegaHudService megaHudService = Skblock.getMegaHudService();
+        if (type == Material.BLUE_WOOL) {
+            megaHudService.setSidebarTitle(player.getUniqueId(), "§a§lSkyblock");
+            megaHudService.setSidebarLine(player.getUniqueId(), 0, SidebarLine.rightSideOnly("Right side only"));
+            megaHudService.setSidebarLine(player.getUniqueId(), 1, SidebarLine.BLANK);
+            megaHudService.setSidebarLine(player.getUniqueId(), 2, SidebarLine.bothSides("§bThis is...", "§e...The Lobby!"));
+            megaHudService.setSidebarLine(player.getUniqueId(), 3, SidebarLine.leftSideOnly("§nCool, Huh?"));
+        }
 
-            Score testScore = objective.getScore("§dTest Score");
-            testScore.setScore(1);
+        if (type == Material.YELLOW_WOOL) {
+            megaHudService.removeSidebarLine(player.getUniqueId(), 2);
+        }
 
-            Score testScore2 = objective.getScore("Second Test score");
-            testScore2.setScore(0);
-//            objective.setAutoUpdateDisplay(true);
-//            objective.setDisplayName("§b§lMega Randomizer");
+        if (type == Material.RED_WOOL) {
+            megaHudService.removeSidebar(player.getUniqueId());
+        }
 
+        if (type == Material.LIGHT_BLUE_WOOL) {
+            megaHudService.setSidebarLine(player.getUniqueId(), 4, SidebarLine.rightSideOnly("Extra"));
+        }
 
-//            Objective objective2 = scoreboard.registerNewObjective("test_2", "anything", "Another set of objectives here \nAnd another line here? \n \n Blank above?");
-//            objective2.setDisplaySlot(DisplaySlot.SIDEBAR);
+        if (type == Material.ORANGE_WOOL) {
+            megaHudService.removeAllSidebarLines(player.getUniqueId());
+        }
 
-            player.setScoreboard(scoreboard);*/
+        if (type == Material.CYAN_WOOL) {
+            Map<Integer, SidebarLine> sidebarLines = new HashMap<>();
+            sidebarLines.put(0, SidebarLine.leftSideOnly("§kHey there"));
+            sidebarLines.put(2, SidebarLine.rightSideOnly("§aCurrent progress: §l21/25"));
+            sidebarLines.put(1, SidebarLine.bothSides("", ""));
+            sidebarLines.put(3, SidebarLine.BLANK);
+            sidebarLines.put(4, SidebarLine.BLANK);
+            sidebarLines.put(5, SidebarLine.BLANK);
+            sidebarLines.put(6, SidebarLine.leftSideOnly("Some other score: §411"));
 
-//
+            megaHudService.setAllSidebarLines(player.getUniqueId(), sidebarLines);
+        }
 
+        if (type == Material.WHITE_WOOL) {
+            Map<Integer, SidebarLine> sidebarLines = new HashMap<>();
+            sidebarLines.put(0, SidebarLine.BLANK);
+            sidebarLines.put(1, SidebarLine.BLANK);
+            sidebarLines.put(2, SidebarLine.leftSideOnly("These are the replacements!"));
 
+            megaHudService.setAllSidebarLines(player.getUniqueId(), sidebarLines);
         }
 
         if (type == Material.GREEN_WOOL) {
-            Objective objective = player.getScoreboard().getObjective("test");
-//            Objective objective2 = player.getScoreboard().getObjective("test_2");
-            if (objective != null) {
-                objective.unregister();
-            }
-//            if (objective2 != null) {
-//                objective2.unregister();
-//            }
-
-//            player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+            Map<Integer, SidebarLine> sidebarLines = new HashMap<>();
+            megaHudService.setAllSidebarLines(player.getUniqueId() ,sidebarLines);
         }
+
+
+
 
         /*if (type == Material.CRYING_OBSIDIAN) {
             System.out.println("Counting entities....");

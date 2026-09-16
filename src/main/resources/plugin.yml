@@ -2,7 +2,7 @@ name: skblock
 version: '1.0-SNAPSHOT'
 main: com.steve.skblock.Skblock
 api-version: '1.21'
-depend: [FastAsyncWorldEdit, MegaNPCs-core]
+depend: [FastAsyncWorldEdit, MegaNPCs-core, MegaHUD-core]
 permissions:
   skyblock.admin:
     description: Admin permission

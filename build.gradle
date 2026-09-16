@@ -46,7 +46,8 @@ dependencies {
 
     // MegaNpcs
     compileOnly("com.github.stevefali:MegaNpcs:v1.1.2")
-
+    // MegaHUD
+    compileOnly("com.github.stevefali:MegaHUD:v1.1.0")
 }
 
 
