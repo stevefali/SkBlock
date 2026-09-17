@@ -1,6 +1,7 @@
 package com.steve.skblock;
 
 import com.steve.MegaHUD.api.MegaHudService;
+import com.steve.MegaHUD.api.SidebarLine;
 import com.steve.MegaNPCs.api.NpcService;
 import com.steve.skblock.commands.*;
 import com.steve.skblock.events.routed.BlockEvent;
@@ -39,7 +40,10 @@ public final class Skblock extends JavaPlugin {
     private static final SkyblockDataStore skyblockDataStore = new NbtSkyblockDataStore();
     private static final SessionRegistry sessionRegistry = new SessionRegistry(skyblockDataStore);
     private static final Map<String, List<UUID>> NPC_IDS = new HashMap<>();
-    private static final String SKYBLOCK_LOBBY_NAME = "skyblock_lobby";
+
+    public static final String SKYBLOCK_LOBBY_NAME = "skyblock_lobby";
+    private static final Map<Integer, SidebarLine> lobbySidebarLines = new HashMap<>();
+    public static final String LOBBY_SIDEBAR_TITLE = "§a§lSKYBLOCK";
 
 
     @Override
@@ -77,12 +81,17 @@ public final class Skblock extends JavaPlugin {
 
         MenuProvider.register(this);
 
+        populateLobbySidebarMap();
 
         World skyblockLobbyWorld = Bukkit.getWorld(SKYBLOCK_LOBBY_NAME);
         if (skyblockLobbyWorld != null) {
             skyblockLobbyWorld.setSpawnLocation(lobbySpawn);
             skyblockLobbyWorld.setPVP(false);
             skyblockLobbyWorld.setDifficulty(Difficulty.PEACEFUL);
+
+            for (Player player : skyblockLobbyWorld.getPlayers()) {
+                showSidebar(player.getUniqueId());
+            }
         }
 
         for (World world : Bukkit.getWorlds()) {
@@ -152,5 +161,30 @@ public final class Skblock extends JavaPlugin {
         return megaHudService;
     }
 
+    public static Map<Integer, SidebarLine> getLobbySidebarLines() {
+        return lobbySidebarLines;
+    }
+
+    private static void populateLobbySidebarMap() {
+        lobbySidebarLines.put(0, SidebarLine.BLANK);
+        lobbySidebarLines.put(1, SidebarLine.rightSideOnly("§bSkyblock Lobby   "));
+        lobbySidebarLines.put(2, SidebarLine.BLANK);
+        lobbySidebarLines.put(3, SidebarLine.BLANK);
+        lobbySidebarLines.put(4, SidebarLine.BLANK);
+        lobbySidebarLines.put(5, SidebarLine.leftSideOnly("Talk to §6Meg§r for"));
+        lobbySidebarLines.put(6, SidebarLine.leftSideOnly("Skyblock options"));
+        lobbySidebarLines.put(7, SidebarLine.leftSideOnly("or to return to the"));
+        lobbySidebarLines.put(8, SidebarLine.leftSideOnly("main lobby."));
+    }
+
+    public static void showSidebar(UUID playerId) {
+        megaHudService.setSidebarTitle(playerId, LOBBY_SIDEBAR_TITLE);
+        megaHudService.setAllSidebarLines(playerId, lobbySidebarLines);
+        megaHudService.setSidebarLine(
+                playerId,
+                3,
+                SidebarLine.bothSides("§eSkyblock Score: ", "§5§l47")
+        );
+    }
 
 }

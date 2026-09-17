@@ -5,10 +5,6 @@ import com.steve.MegaHUD.api.SidebarLine;
 import com.steve.skblock.Skblock;
 import com.steve.skblock.game.SessionRegistry;
 import com.steve.skblock.game.SkyblockSession;
-import com.steve.skblock.game.data.DataKeys;
-import io.papermc.paper.scoreboard.numbers.NumberFormat;
-import net.minecraft.network.chat.numbers.NumberFormatTypes;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -18,9 +14,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 public class BlockEvent implements Listener {
 
@@ -49,6 +44,7 @@ public class BlockEvent implements Listener {
             player.sendMessage("You broke that in the lobby!");
 
         }
+/*
 
         MegaHudService megaHudService = Skblock.getMegaHudService();
         if (type == Material.BLUE_WOOL) {
@@ -102,6 +98,7 @@ public class BlockEvent implements Listener {
             megaHudService.setAllSidebarLines(player.getUniqueId() ,sidebarLines);
         }
 
+*/
 
 
 
