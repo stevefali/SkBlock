@@ -1,6 +1,7 @@
 package com.steve.skblock.game;
 
 import com.steve.skblock.game.data.SkyblockDataStore;
+import com.steve.skblock.sidebar.SkyblockSidebar;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -52,6 +53,7 @@ public class SkyblockSession {
     public void addScore(int amount) {
         this.skyblockScore += amount;
         this.scoreDirty = true;
+        SkyblockSidebar.setSkyblockScoreLine(worldOwnerPlayerId, this.skyblockScore);
     }
 
 

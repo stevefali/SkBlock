@@ -2,6 +2,7 @@ package com.steve.skblock.events.unrouted;
 
 import com.steve.skblock.Skblock;
 import com.steve.skblock.npc.NpcFactory;
+import com.steve.skblock.sidebar.SkyblockSidebar;
 import com.steve.skblock.util.TitlesUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -43,7 +44,7 @@ public class PlayerEvent implements Listener {
 
         TitlesUtils.sendTitle(player, "§6Welcome to Skyblock", 7, 40, 7);
 
-        Skblock.showSidebar(player.getUniqueId());
+        SkyblockSidebar.showSidebar(player.getUniqueId(), SKYBLOCK_LOBBY_NAME);
     }
 
     @EventHandler
@@ -79,6 +80,7 @@ public class PlayerEvent implements Listener {
         }
 
         NpcFactory.showNPCs(toWorld.getName(), player);
+        SkyblockSidebar.showSidebar(player.getUniqueId(), toWorld.getName());
     }
 
     private void removeWorldNpcs(String worldName) {
