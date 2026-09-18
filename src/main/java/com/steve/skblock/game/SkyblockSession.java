@@ -24,6 +24,9 @@ public class SkyblockSession {
     private int skyblockScore;
     private boolean scoreDirty = false;
 
+    private SkyblockProgress skyblockProgress;
+    private boolean progressDirty = false;
+
 
     public SkyblockSession(World world, SkyblockDataStore skyblockDataStore) {
         if (!world.getName().startsWith(WORLD_NAME_PREFIX)) {
@@ -37,16 +40,24 @@ public class SkyblockSession {
         this.skyblockDataStore = skyblockDataStore;
 
         this.skyblockScore = skyblockDataStore.loadSkyblockScore(worldOwnerPlayerId);
+        this.skyblockProgress = skyblockDataStore.loadProgress(worldOwnerPlayerId);
     }
 
     public void saveAll() {
         skyblockDataStore.saveSkyblockScore(worldOwnerPlayerId, skyblockScore);
+        skyblockDataStore.saveProgress(worldOwnerPlayerId, skyblockProgress);
+        scoreDirty = false;
+        progressDirty = false;
     }
 
     public void saveDirty() {
         if (scoreDirty) {
             skyblockDataStore.saveSkyblockScore(worldOwnerPlayerId, skyblockScore);
             scoreDirty = false;
+        }
+        if (progressDirty) {
+            skyblockDataStore.saveProgress(worldOwnerPlayerId, skyblockProgress);
+            progressDirty = true;
         }
     }
 
@@ -56,6 +67,10 @@ public class SkyblockSession {
         SkyblockSidebar.setSkyblockScoreLine(worldOwnerPlayerId, this.skyblockScore);
     }
 
+    public void advanceQuest(int amount) {
+        skyblockProgress.setCurrentQuestProgress(skyblockProgress.getCurrentQuestProgress() + amount);
+        progressDirty = true;
+    }
 
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
