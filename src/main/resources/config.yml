@@ -1,0 +1,49 @@
+starting_quest: punch_it
+
+quests:
+  punch_it:
+    type: harvest
+    title: 'Punch It!'
+    material: OAK_LOG
+    amount: 5
+    description: 'Harvest 4 Oak Logs'
+    next: craft_wooden_axe
+  craft_wooden_axe:
+    type: craft
+    title: 'Crafting Time'
+    material: WOODEN_AXE
+    amount: 1
+    description: 'Craft a Wooden Axe'
+    next: craft_wooden_shovel
+  craft_wooden_shovel:
+    type: craft
+    title: 'Crafting Time'
+    material: WOODEN_SHOVEL
+    amount: 1
+    description: 'Craft a Wooden Shovel'
+    next: craft_wooden_hoe
+  craft_wooden_hoe:
+    type: craft
+    title: 'Crafting Time'
+    material: WOODEN_HOE
+    amount: 1
+    description: 'Craft a Wooden Hoe'
+    next: randy_get_oak_saplings
+  randy_get_oak_saplings:
+    type: talk_randy
+    title: 'Crafting Time'
+    dialogue:
+      - 'Nice work! Those should come in handy.'
+      - "You'll need lots more wood, so you'd better plant some more trees."
+      - 'Here are some saplings to get you started'
+    amount: 1
+    description: 'Talk to Randy'
+    next: plant_oak
+  plant_oak:
+    type: place
+    title: 'Let it Grow'
+    material: OAK_SAPLING
+    amount: 6
+    description: 'Plant 5 Oak Saplings'
+    next: something
+

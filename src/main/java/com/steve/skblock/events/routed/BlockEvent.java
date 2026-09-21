@@ -10,6 +10,10 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.*;
 
@@ -44,8 +48,12 @@ public class BlockEvent implements Listener {
             player.sendMessage("You broke that in the lobby!");
 
         }
-/*
 
+        if (type == Material.BLUE_WOOL) {
+            Skblock.getQuestRegistry().test(plugin);
+        }
+
+/*
         MegaHudService megaHudService = Skblock.getMegaHudService();
         if (type == Material.BLUE_WOOL) {
             megaHudService.setSidebarTitle(player.getUniqueId(), "§a§lSkyblock");

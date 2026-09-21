@@ -10,6 +10,7 @@ import com.steve.skblock.game.SessionRegistry;
 import com.steve.skblock.game.SkyblockSession;
 import com.steve.skblock.game.data.NbtSkyblockDataStore;
 import com.steve.skblock.game.data.SkyblockDataStore;
+import com.steve.skblock.game.quest.QuestRegistry;
 import com.steve.skblock.menu.MenuProvider;
 import com.steve.skblock.npc.NpcFactory;
 import com.steve.skblock.sidebar.SkyblockSidebar;
@@ -21,7 +22,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public final class Skblock extends JavaPlugin {
@@ -40,6 +44,7 @@ public final class Skblock extends JavaPlugin {
     private static final SkyblockDataStore skyblockDataStore = new NbtSkyblockDataStore();
     private static final SessionRegistry sessionRegistry = new SessionRegistry(skyblockDataStore);
     private static final Map<String, List<UUID>> NPC_IDS = new HashMap<>();
+    private static QuestRegistry questRegistry;
 
     public static final String SKYBLOCK_LOBBY_NAME = "skyblock_lobby";
 
@@ -51,6 +56,9 @@ public final class Skblock extends JavaPlugin {
         megaHudService = Bukkit.getServicesManager().load(MegaHudService.class);
         lobbySpawn = new Location(Bukkit.getWorld(SKYBLOCK_LOBBY_NAME), 0.5, 65, 0.5, 30.0F, 0.0F);
         logger = this.getLogger();
+
+        saveDefaultConfig();
+        questRegistry = new QuestRegistry(this);
 
         SkyblockSidebar.register(megaHudService);
 
@@ -158,7 +166,9 @@ public final class Skblock extends JavaPlugin {
         return megaHudService;
     }
 
-
+    public static QuestRegistry getQuestRegistry() {
+        return questRegistry;
+    }
 
 
 }

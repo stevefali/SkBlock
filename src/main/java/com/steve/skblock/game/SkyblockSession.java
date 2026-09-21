@@ -100,5 +100,8 @@ public class SkyblockSession {
         return this.skyblockScore;
     }
 
+    public SkyblockProgress getSkyblockProgress() {
+        return this.skyblockProgress;
+    }
 
 }

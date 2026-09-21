@@ -1,6 +1,7 @@
 package com.steve.skblock.game.data;
 
 import com.google.gson.Gson;
+import com.steve.skblock.Skblock;
 import com.steve.skblock.game.SkyblockProgress;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -33,8 +34,7 @@ public class NbtSkyblockDataStore implements SkyblockDataStore {
         if (jsonString != null) {
             return GSON.fromJson(jsonString, SkyblockProgress.class);
         }
-        // TODO: Implement starting Quest ID!!!!!!!!!!!!!!!!!!
-        return new SkyblockProgress("");
+        return new SkyblockProgress(Skblock.getQuestRegistry().getStartingQuestId());
     }
 
     @Override
