@@ -1,24 +1,13 @@
 package com.steve.skblock.events.routed;
 
-import com.steve.MegaHUD.api.MegaHudService;
-import com.steve.MegaHUD.api.SidebarLine;
-import com.steve.skblock.Skblock;
 import com.steve.skblock.game.SessionRegistry;
 import com.steve.skblock.game.SkyblockSession;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scoreboard.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class BlockEvent implements Listener {
@@ -49,9 +38,6 @@ public class BlockEvent implements Listener {
 
         }
 
-        if (type == Material.BLUE_WOOL) {
-            Skblock.getQuestRegistry().test(plugin);
-        }
 
 /*
         MegaHudService megaHudService = Skblock.getMegaHudService();

@@ -52,19 +52,30 @@ public class SkyblockSidebar {
                 playerScore = skyblockSession.getSkyblockScore();
 
                 if (skyblockWorld.getName().equals(worldName)) {
-                    SkyblockProgress currentProgress = skyblockSession.getSkyblockProgress();
-                    if (currentProgress != null) {
-                        SkyblockQuest currentQuest = Skblock.getQuestRegistry().getQuest(currentProgress.getCurrentQuestId());
-                        if (currentQuest != null) {
-                            setQuestLine(playerId, currentQuest.getTitle());
-                            setQuestDescriptionLine(playerId, currentQuest.getDescription());
-                            setQuestProgressLine(playerId, currentProgress.getCurrentQuestProgress(), currentQuest.getTargetAmount());
-                        }
-                    }
+//                    SkyblockProgress currentProgress = skyblockSession.getSkyblockProgress();
+//                    if (currentProgress != null) {
+//                        SkyblockQuest currentQuest = Skblock.getQuestRegistry().getQuest(currentProgress.getCurrentQuestId());
+                    updateQuestSidebarLines(playerId, skyblockSession);
+//                    }
                 }
             }
         }
         setSkyblockScoreLine(playerId, playerScore);
+    }
+
+    public static void updateQuestSidebarLines(
+            UUID playerId,
+            SkyblockSession skyblockSession  /* SkyblockProgress currentProgress, SkyblockQuest currentQuest*/) {
+        SkyblockProgress currentProgress = skyblockSession.getSkyblockProgress();
+
+        if (currentProgress != null) {
+            SkyblockQuest currentQuest = Skblock.getQuestRegistry().getQuest(currentProgress.getCurrentQuestId());
+            if (currentQuest != null) {
+                setQuestLine(playerId, currentQuest.getTitle());
+                setQuestDescriptionLine(playerId, currentQuest.getDescription());
+                setQuestProgressLine(playerId, currentProgress.getCurrentQuestProgress(), currentQuest.getTargetAmount());
+            }
+        }
     }
 
 

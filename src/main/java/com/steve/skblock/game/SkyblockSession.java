@@ -1,7 +1,10 @@
 package com.steve.skblock.game;
 
+import com.steve.skblock.Skblock;
 import com.steve.skblock.game.data.SkyblockDataStore;
+import com.steve.skblock.game.quest.SkyblockQuest;
 import com.steve.skblock.sidebar.SkyblockSidebar;
+import com.steve.skblock.util.TitlesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,6 +13,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFormEvent;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.UUID;
 
@@ -26,6 +31,8 @@ public class SkyblockSession {
 
     private SkyblockProgress skyblockProgress;
     private boolean progressDirty = false;
+
+    private static final Plugin plugin = JavaPlugin.getPlugin(Skblock.class);
 
 
     public SkyblockSession(World world, SkyblockDataStore skyblockDataStore) {
@@ -69,6 +76,12 @@ public class SkyblockSession {
 
     public void advanceQuest(int amount) {
         skyblockProgress.setCurrentQuestProgress(skyblockProgress.getCurrentQuestProgress() + amount);
+
+        SkyblockQuest currentQuest = Skblock.getQuestRegistry().getQuest(skyblockProgress.getCurrentQuestId());
+        if (skyblockProgress.getCurrentQuestProgress() >= currentQuest.getTargetAmount()) {
+            completeQuest(skyblockProgress, currentQuest);
+        }
+        SkyblockSidebar.updateQuestSidebarLines(worldOwnerPlayerId, this);
         progressDirty = true;
     }
 
@@ -78,8 +91,9 @@ public class SkyblockSession {
             player.sendMessage("You broke that in a skyblock world! Score: " + skyblockScore);
         }
         if (event.getBlock().getType() == Material.ORANGE_WOOL) {
-            addScore(1);
+//            addScore(1);
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.5f, 2.5f);
+            advanceQuest(1);
         }
     }
 
@@ -102,6 +116,24 @@ public class SkyblockSession {
 
     public SkyblockProgress getSkyblockProgress() {
         return this.skyblockProgress;
+    }
+
+    private void completeQuest(SkyblockProgress currentProgress, SkyblockQuest currentQuest) {
+        Player player = Bukkit.getPlayer(worldOwnerPlayerId);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+        TitlesUtils.sendSubtitle(player, "§6Quest Completed: " + currentQuest.getTitle(), 7, 40, 7);
+        addScore(currentQuest.getReward());
+        if (currentQuest.getRewardAction() != null) {
+            currentQuest.performRewardAction(player);
+            player.sendMessage(currentQuest.getRewardMessage());
+        }
+        skyblockProgress.onQuestComplete(currentQuest.getNextQuestId());
+
+        Bukkit.getScheduler().runTaskLater(
+                plugin, () -> {
+                    SkyblockSidebar.updateQuestSidebarLines(worldOwnerPlayerId, this);
+                }, 40L
+        );
     }
 
 }

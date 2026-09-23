@@ -3,8 +3,11 @@ package com.steve.skblock.game.quest.type;
 import com.steve.skblock.game.quest.QuestRewardAction;
 import org.bukkit.Material;
 
-public class PlacingQuest extends BaseItemQuest {
-    public PlacingQuest(
+public class BaseItemQuest extends BaseQuest {
+
+    Material material;
+
+    public BaseItemQuest(
             String id,
             String title,
             String description,
@@ -13,7 +16,12 @@ public class PlacingQuest extends BaseItemQuest {
             int reward,
             QuestRewardAction questRewardAction,
             String nextQuestId) {
-        super(id, title, description, material, targetAmount, reward, questRewardAction, nextQuestId);
+
+        super(id, title, description, targetAmount, reward, questRewardAction, nextQuestId);
+        this.material = material;
     }
 
+    public Material getMaterial() {
+        return material;
+    }
 }

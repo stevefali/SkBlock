@@ -1,13 +1,9 @@
 package com.steve.skblock.game;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class SkyblockProgress {
 
     private String currentQuestId;
     private int currentQuestProgress;
-    private final Set<String> completedQuestIds = new HashSet<>();
 
     public SkyblockProgress(String startingQuestId) {
         this.currentQuestId = startingQuestId;
@@ -15,10 +11,9 @@ public class SkyblockProgress {
     }
 
     public void onQuestComplete(String nextQuestId) {
-        if (currentQuestId != null) {
-            completedQuestIds.add(currentQuestId);
+        if (nextQuestId != null) {
+            currentQuestId = nextQuestId;
         }
-        currentQuestId = nextQuestId;
         currentQuestProgress = 0;
     }
 

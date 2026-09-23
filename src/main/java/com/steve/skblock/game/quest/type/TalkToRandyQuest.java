@@ -1,51 +1,48 @@
 package com.steve.skblock.game.quest.type;
 
-import com.steve.skblock.game.quest.SkyblockQuest;
+import com.steve.skblock.Skblock;
+import com.steve.skblock.game.quest.QuestRewardAction;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
-public class TalkToRandyQuest implements SkyblockQuest {
+public class TalkToRandyQuest extends BaseQuest {
 
-    private final String id;
-    private final String title;
+    private static final Plugin plugin = JavaPlugin.getPlugin(Skblock.class);
     private final List<String> dialogueLines;
-    private final String description;
-    private final int targetAmount;
-    private final String nextQuestId;
 
-    public TalkToRandyQuest(String id, String title, List<String> dialogueLines, String description, int targetAmount, String nextQuestId) {
-        this.id = id;
-        this.title = title;
+
+    public TalkToRandyQuest(
+            String id,
+            String title,
+            List<String> dialogueLines,
+            String description,
+            int targetAmount,
+            int reward,
+            QuestRewardAction questRewardAction,
+            String nextQuestId) {
+
+        super(id, title, description, targetAmount, reward, questRewardAction, nextQuestId);
         this.dialogueLines = dialogueLines;
-        this.description = description;
-        this.targetAmount = targetAmount;
-        this.nextQuestId = nextQuestId;
     }
 
-    @Override
-    public String getId() {
-        return this.id;
-    }
 
     @Override
-    public String getTitle() {
-        return this.title;
+    public void performRewardAction(Player player) {
+        for (int i = 1; i <= dialogueLines.size(); i++) {
+            int lineNumber = i;
+            Bukkit.getScheduler().runTaskLater(
+                    plugin, () -> {
+                        player.sendMessage("[" + lineNumber + "/" + dialogueLines.size() + "] " + dialogueLines.get(lineNumber - 1));
+                    }, 20L * lineNumber
+            );
+        }
+        super.performRewardAction(player);
     }
 
-    @Override
-    public String getDescription() {
-        return this.description;
-    }
-
-    @Override
-    public int getTargetAmount() {
-        return this.targetAmount;
-    }
-
-    @Override
-    public String getNextQuestId() {
-        return this.nextQuestId;
-    }
 
     public List<String> getDialogueLines() {
         return this.dialogueLines;

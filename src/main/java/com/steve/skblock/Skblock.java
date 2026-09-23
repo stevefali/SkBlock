@@ -58,6 +58,7 @@ public final class Skblock extends JavaPlugin {
         logger = this.getLogger();
 
         saveDefaultConfig();
+        reloadConfig();
         questRegistry = new QuestRegistry(this);
 
         SkyblockSidebar.register(megaHudService);
@@ -73,7 +74,7 @@ public final class Skblock extends JavaPlugin {
         getServer().getPluginManager().registerEvents(blockEvent, this);
         getServer().getPluginManager().registerEvents(portalEvents, this);
         getServer().getPluginManager().registerEvents(new WorldEvent(this, sessionRegistry), this);
-        getServer().getPluginManager().registerEvents(new InventoryEvent(), this);
+        getServer().getPluginManager().registerEvents(new InventoryEvent(this), this);
         getServer().getPluginManager().registerEvents(new MegaHudEvent(), this);
 
 

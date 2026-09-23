@@ -6,7 +6,12 @@ quests:
     title: 'Punch It!'
     material: OAK_LOG
     amount: 5
-    description: 'Harvest 4 Oak Logs'
+    description: 'Harvest 5 Oak Logs'
+    reward: 1
+    action:
+      action_type: give_item
+      action_material: GOLD_BLOCK
+      material_quantity: 3
     next: craft_wooden_axe
   craft_wooden_axe:
     type: craft
@@ -14,6 +19,10 @@ quests:
     material: WOODEN_AXE
     amount: 1
     description: 'Craft a Wooden Axe'
+    reward: 1
+    action:
+      action_type: custom
+      custom_action_name: TestAction
     next: craft_wooden_shovel
   craft_wooden_shovel:
     type: craft
@@ -21,6 +30,8 @@ quests:
     material: WOODEN_SHOVEL
     amount: 1
     description: 'Craft a Wooden Shovel'
+    reward: 1
+    action: null
     next: craft_wooden_hoe
   craft_wooden_hoe:
     type: craft
@@ -28,6 +39,8 @@ quests:
     material: WOODEN_HOE
     amount: 1
     description: 'Craft a Wooden Hoe'
+    reward: 1
+    action: null
     next: randy_get_oak_saplings
   randy_get_oak_saplings:
     type: talk_randy
@@ -38,12 +51,21 @@ quests:
       - 'Here are some saplings to get you started'
     amount: 1
     description: 'Talk to Randy'
+    reward: 1
+    action:
+      action_type: give_item
+      action_material: OAK_SAPLING
+      material_quantity: 3
     next: plant_oak
   plant_oak:
     type: place
     title: 'Let it Grow'
     material: OAK_SAPLING
     amount: 6
-    description: 'Plant 5 Oak Saplings'
+    description: 'Plant 6 Oak Saplings'
+    reward: 5
+    action:
+      action_type: set_island
+      island_level: 1
     next: something
 

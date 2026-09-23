@@ -3,6 +3,7 @@ package com.steve.skblock.worlds;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Dynamic;
 import com.steve.skblock.Skblock;
+import com.steve.skblock.sidebar.SkyblockSidebar;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -43,6 +44,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
@@ -217,6 +219,8 @@ public class SkyblockWorldFactory {
         Skblock.getNpcService().removeAllNpcsInWorld(worldName);
         Skblock.getNpcIds().remove(worldName);
         Bukkit.unloadWorld(worldName, false);
+
+        SkyblockSidebar.setSkyblockScoreLine(UUID.fromString(worldNameSuffix), 0);
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(
                 plugin, () -> {
