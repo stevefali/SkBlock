@@ -29,5 +29,19 @@ public class SkyblockProgress {
         this.currentQuestProgress = questProgress;
     }
 
+    /**
+     * THIS SHOULD ONLY BE USED FOR FORCE-SETTING THE QUEST!
+     */
+    public void forceSetQuest(String questId) {
+        forceSetQuest(questId, 0);
+    }
+
+    /**
+     * THIS SHOULD ONLY BE USED FOR FORCE-SETTING THE QUEST!
+     */
+    public void forceSetQuest(String questId, int questProgress) {
+        this.currentQuestId = questId;
+        this.currentQuestProgress = questProgress;
+    }
 
 }

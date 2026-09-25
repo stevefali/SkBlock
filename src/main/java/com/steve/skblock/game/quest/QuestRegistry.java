@@ -16,6 +16,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class QuestRegistry {
@@ -198,6 +199,10 @@ public class QuestRegistry {
         } catch (Throwable throwable) {
             throw new RuntimeException("Error instantiating CustomRewardAction class " + className + " from class name in config.yml", throwable);
         }
+    }
+
+    public List<String> getAllQuestIds() {
+        return skyblockQuests.keySet().stream().toList();
     }
 
 }

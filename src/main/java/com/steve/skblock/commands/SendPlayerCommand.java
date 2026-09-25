@@ -23,40 +23,34 @@ public class SendPlayerCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if (args.length < 1) {
             sender.sendMessage("Please specify a world and player");
             return false;
         }
-        if (args.length > 0) {
-            if (plugin.getServer().getWorld(args[0]) != null) {
-                if (args.length == 2) {
-                    World world = plugin.getServer().getWorld(args[0]);
-                    if (plugin.getServer().getPlayer(args[1]) != null) {
-                        // Bingo
-                        Location location = new Location(world, 0, 65, 0);
-                        Player player = plugin.getServer().getPlayer(args[1]);
-                        Location spawnLocation = world.getSpawnLocation();
+        if (plugin.getServer().getWorld(args[0]) != null) {
+            if (args.length == 2) {
+                World world = plugin.getServer().getWorld(args[0]);
+                if (plugin.getServer().getPlayer(args[1]) != null) {
+                    // Bingo
+                    Location location = new Location(world, 0, 65, 0);
+                    Player player = plugin.getServer().getPlayer(args[1]);
+                    Location spawnLocation = world.getSpawnLocation();
 
-                        player.teleport(spawnLocation);
+                    player.teleport(spawnLocation);
 
 
-                    } else {
-                        sender.sendMessage("No player found with name " + args[1]);
-                    }
                 } else {
-                    sender.sendMessage("Please specify exactly 1 world and 1 player");
-                    return false;
+                    sender.sendMessage("No player found with name " + args[1]);
                 }
             } else {
-                sender.sendMessage("Be sure to specify a correct world name");
+                sender.sendMessage("Please specify exactly 1 world and 1 player");
                 return false;
             }
+        } else {
+            sender.sendMessage("Be sure to specify a correct world name");
+            return false;
         }
 
         return true;

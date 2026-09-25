@@ -1,5 +1,7 @@
 package com.steve.skblock.events.routed;
 
+import com.steve.skblock.game.SessionRegistry;
+import com.steve.skblock.game.SkyblockSession;
 import com.steve.skblock.util.CobbleGenerator;
 //import net.minecraft.network.chat.Component;
 import org.bukkit.Material;
@@ -16,18 +18,26 @@ import java.util.logging.Logger;
 public class CobbleGenerationEvent implements Listener {
 
 
-    Logger logger;
+    private Logger logger;
+    private Plugin plugin;
+    private final SessionRegistry sessionRegistry;
 
-    Plugin plugin;
 
-
-    public CobbleGenerationEvent(Plugin plugin) {
+    public CobbleGenerationEvent(Plugin plugin, SessionRegistry sessionRegistry) {
         this.logger = plugin.getLogger();
         this.plugin = plugin;
+        this.sessionRegistry = sessionRegistry;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onGenerateCobblestone(BlockFormEvent event) {
+
+        SkyblockSession skyblockSession = sessionRegistry.getSession(event.getBlock().getWorld());
+        if (skyblockSession != null) {
+            skyblockSession.onGenerateCobble(event);
+            return;
+        }
+
         if (event.getNewState().getType() == Material.COBBLESTONE) {
             event.getNewState().setType(CobbleGenerator.determineBlock());
         }

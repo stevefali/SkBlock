@@ -24,3 +24,9 @@ commands:
       description: Go to the skyblock lobby
     home:
       description: Go to the home lobby server
+    forceSetPlayerQuest:
+      description: Force-set the given player's current Skyblock quest to the given quest
+      permission: skyblock.admin
+    forceSetPlayerScore:
+      description: Force-set the given player's Skyblock score
+      permission: skyblock.admin

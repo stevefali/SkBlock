@@ -5,6 +5,8 @@ import com.steve.MegaNPCs.api.NpcService;
 import com.steve.skblock.commands.*;
 import com.steve.skblock.events.routed.BlockEvent;
 import com.steve.skblock.events.routed.CobbleGenerationEvent;
+import com.steve.skblock.events.routed.InventoryEvent;
+import com.steve.skblock.events.routed.NpcEvent;
 import com.steve.skblock.events.unrouted.*;
 import com.steve.skblock.game.SessionRegistry;
 import com.steve.skblock.game.SkyblockSession;
@@ -64,7 +66,7 @@ public final class Skblock extends JavaPlugin {
         SkyblockSidebar.register(megaHudService);
 
         playerEvent = new PlayerEvent(this, lobbySpawn);
-        cobbleGenerationEvent = new CobbleGenerationEvent(this);
+        cobbleGenerationEvent = new CobbleGenerationEvent(this, sessionRegistry);
         blockEvent = new BlockEvent(this, sessionRegistry);
         portalEvents = new PortalEvents(this);
 
@@ -74,8 +76,9 @@ public final class Skblock extends JavaPlugin {
         getServer().getPluginManager().registerEvents(blockEvent, this);
         getServer().getPluginManager().registerEvents(portalEvents, this);
         getServer().getPluginManager().registerEvents(new WorldEvent(this, sessionRegistry), this);
-        getServer().getPluginManager().registerEvents(new InventoryEvent(this), this);
+        getServer().getPluginManager().registerEvents(new InventoryEvent(this, sessionRegistry), this);
         getServer().getPluginManager().registerEvents(new MegaHudEvent(), this);
+        getServer().getPluginManager().registerEvents(new NpcEvent(sessionRegistry), this);
 
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -86,6 +89,8 @@ public final class Skblock extends JavaPlugin {
         getCommand("loadworld").setExecutor(new LoadWorldCommand(this));
         getCommand("lobby").setExecutor(new LobbyCommand());
         getCommand("home").setExecutor(new HomeCommand(this));
+        getCommand("forceSetPlayerQuest").setExecutor(new ForceSetPlayerQuestCommand());
+        getCommand("forceSetPlayerScore").setExecutor(new ForceSetPlayerScoreCommand());
 
         MenuProvider.register(this);
 

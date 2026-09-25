@@ -1,8 +1,13 @@
 package com.steve.skblock.game;
 
+import com.steve.MegaNPCs.api.NpcInteractionEvent;
 import com.steve.skblock.Skblock;
 import com.steve.skblock.game.data.SkyblockDataStore;
 import com.steve.skblock.game.quest.SkyblockQuest;
+import com.steve.skblock.game.quest.type.CraftingQuest;
+import com.steve.skblock.game.quest.type.HarvestQuest;
+import com.steve.skblock.game.quest.type.PlacingQuest;
+import com.steve.skblock.game.quest.type.TalkToRandyQuest;
 import com.steve.skblock.sidebar.SkyblockSidebar;
 import com.steve.skblock.util.TitlesUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +18,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFormEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -76,8 +83,10 @@ public class SkyblockSession {
 
     public void advanceQuest(int amount) {
         skyblockProgress.setCurrentQuestProgress(skyblockProgress.getCurrentQuestProgress() + amount);
+        Player player = getPlayer();
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.5f, 2.5f);
 
-        SkyblockQuest currentQuest = Skblock.getQuestRegistry().getQuest(skyblockProgress.getCurrentQuestId());
+        SkyblockQuest currentQuest = getCurrentQuest();
         if (skyblockProgress.getCurrentQuestProgress() >= currentQuest.getTargetAmount()) {
             completeQuest(skyblockProgress, currentQuest);
         }
@@ -86,19 +95,41 @@ public class SkyblockSession {
     }
 
     public void onBlockBreak(BlockBreakEvent event) {
-        Player player = event.getPlayer();
-        if (event.getBlock().getType() == Material.BLACK_WOOL) {
-            player.sendMessage("You broke that in a skyblock world! Score: " + skyblockScore);
+//        Player player = event.getPlayer();
+
+        if (getCurrentQuest() instanceof HarvestQuest harvestQuest && event.getBlock().getType() == harvestQuest.getMaterial()) {
+            advanceQuest(1);
         }
+
+        //      TODO: Remove this!!
         if (event.getBlock().getType() == Material.ORANGE_WOOL) {
 //            addScore(1);
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.5f, 2.5f);
             advanceQuest(1);
         }
     }
 
+
     public void onGenerateCobble(BlockFormEvent event) {
 
+    }
+
+    public void onNpcInteract(NpcInteractionEvent event) {
+        if (getCurrentQuest() instanceof TalkToRandyQuest) {
+            event.setCancelled(true);
+            advanceQuest(1);
+        }
+    }
+
+    public void onItemCrafted(ItemStack craftedItemStack) {
+        if (getCurrentQuest() instanceof CraftingQuest craftingQuest && craftedItemStack.getType() == craftingQuest.getMaterial()) {
+            advanceQuest(craftedItemStack.getAmount());
+        }
+    }
+
+    public void onBlockPlaced(BlockPlaceEvent event) {
+        if (getCurrentQuest() instanceof PlacingQuest placingQuest && event.getBlockPlaced().getType() == placingQuest.getMaterial()) {
+            advanceQuest(1);
+        }
     }
 
 
@@ -121,19 +152,35 @@ public class SkyblockSession {
     private void completeQuest(SkyblockProgress currentProgress, SkyblockQuest currentQuest) {
         Player player = Bukkit.getPlayer(worldOwnerPlayerId);
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-        TitlesUtils.sendSubtitle(player, "§6Quest Completed: " + currentQuest.getTitle(), 7, 40, 7);
+        TitlesUtils.sendSubtitle(player, "§6Completed: " + currentQuest.getDescription(), 7, 60, 7);
         addScore(currentQuest.getReward());
         if (currentQuest.getRewardAction() != null) {
             currentQuest.performRewardAction(player);
             player.sendMessage(currentQuest.getRewardMessage());
         }
-        skyblockProgress.onQuestComplete(currentQuest.getNextQuestId());
 
         Bukkit.getScheduler().runTaskLater(
                 plugin, () -> {
+                    skyblockProgress.onQuestComplete(currentQuest.getNextQuestId());
                     SkyblockSidebar.updateQuestSidebarLines(worldOwnerPlayerId, this);
                 }, 40L
         );
+    }
+
+    private SkyblockQuest getCurrentQuest() {
+        return Skblock.getQuestRegistry().getQuest(skyblockProgress.getCurrentQuestId());
+    }
+
+    private Player getPlayer() {
+        return Bukkit.getPlayer(worldOwnerPlayerId);
+    }
+
+    /**
+     * THIS SHOULD ONLY BE USED FOR FORCE-SETTING THE SCORE!
+     */
+    public void forceSetScore(int score) {
+        this.skyblockScore = score;
+        saveAll();
     }
 
 }

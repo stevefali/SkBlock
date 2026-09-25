@@ -1,12 +1,10 @@
 package com.steve.skblock.commands;
 
 import com.steve.skblock.worlds.SkyblockWorldFactory;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,12 +22,7 @@ public class DeleteWorldCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String[] args) {
-
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if (args.length == 1) {
             SkyblockWorldFactory.deleteWorld(args[0], plugin)
@@ -55,11 +48,7 @@ public class DeleteWorldCommand implements CommandExecutor, TabCompleter {
     ;
 
     @Override
-    public @Nullable List<String> onTabComplete(
-            @NotNull CommandSender sender,
-            @NotNull Command command,
-            @NotNull String label,
-            @NotNull String[] args) {
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if (args.length == 1) {
             File worldsFolder = new File("./SkyblockWorlds");

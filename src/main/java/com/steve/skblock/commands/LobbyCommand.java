@@ -12,11 +12,7 @@ import org.jspecify.annotations.NonNull;
 
 public class LobbyCommand implements CommandExecutor {
     @Override
-    public boolean onCommand(
-            @NotNull CommandSender commandSender,
-            @NotNull Command command,
-            @NotNull String s,
-            @NonNull @NotNull String[] strings) {
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NonNull @NotNull String[] strings) {
 
         if (!(commandSender instanceof Player)) {
             return false;
