@@ -1,6 +1,7 @@
 package com.steve.skblock.events.unrouted;
 
 import com.steve.skblock.Skblock;
+import com.steve.skblock.game.SkyblockSession;
 import com.steve.skblock.npc.NpcFactory;
 import com.steve.skblock.sidebar.SkyblockSidebar;
 import com.steve.skblock.util.TitlesUtils;
@@ -77,6 +78,16 @@ public class PlayerEvent implements Listener {
         if (toWorld.getName().equals(SKYBLOCK_LOBBY_NAME)) {
             player.teleport(lobbySpawn);
             TitlesUtils.sendTitleAndSubtitle(player, "§6Skyblock Lobby", "", 7, 40, 7);
+            SkyblockSession skyblockSession = Skblock.getSessionRegistry().getSession(event.getFrom());
+            if (skyblockSession != null) {
+                skyblockSession.hideBossBar();
+            }
+        } else {
+            SkyblockSession skyblockSession = Skblock.getSessionRegistry().getSession(toWorld);
+            if (skyblockSession != null) {
+                skyblockSession.showBossBar(player);
+                skyblockSession.updateBossBar();
+            }
         }
 
         NpcFactory.showNPCs(toWorld.getName(), player);

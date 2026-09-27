@@ -15,6 +15,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFormEvent;
@@ -39,6 +42,8 @@ public class SkyblockSession {
     private SkyblockProgress skyblockProgress;
     private boolean progressDirty = false;
 
+    private BossBar bossBar;
+
     private static final Plugin plugin = JavaPlugin.getPlugin(Skblock.class);
 
 
@@ -55,6 +60,9 @@ public class SkyblockSession {
 
         this.skyblockScore = skyblockDataStore.loadSkyblockScore(worldOwnerPlayerId);
         this.skyblockProgress = skyblockDataStore.loadProgress(worldOwnerPlayerId);
+        bossBar = Bukkit.createBossBar("", BarColor.BLUE, BarStyle.SOLID);
+        updateBossBar();
+        showBossBar(getPlayer());
     }
 
     public void saveAll() {
@@ -92,6 +100,7 @@ public class SkyblockSession {
         }
         SkyblockSidebar.updateQuestSidebarLines(worldOwnerPlayerId, this);
         progressDirty = true;
+        updateBossBar();
     }
 
     public void onBlockBreak(BlockBreakEvent event) {
@@ -163,8 +172,23 @@ public class SkyblockSession {
                 plugin, () -> {
                     skyblockProgress.onQuestComplete(currentQuest.getNextQuestId());
                     SkyblockSidebar.updateQuestSidebarLines(worldOwnerPlayerId, this);
+                    updateBossBar();
                 }, 40L
         );
+    }
+
+    public void showBossBar(Player player) {
+        bossBar.addPlayer(player);
+    }
+
+    public void updateBossBar() {
+        SkyblockQuest currentQuest = getCurrentQuest();
+        String progress = " §l(" + skyblockProgress.getCurrentQuestProgress() + "/" + currentQuest.getTargetAmount() + ")";
+        bossBar.setTitle("§3§l" + currentQuest.getDescription() + progress);
+    }
+
+    public void hideBossBar() {
+        bossBar.removePlayer(getPlayer());
     }
 
     private SkyblockQuest getCurrentQuest() {
@@ -181,6 +205,11 @@ public class SkyblockSession {
     public void forceSetScore(int score) {
         this.skyblockScore = score;
         saveAll();
+    }
+
+    public void onUnload() {
+        bossBar.removeAll();
+        bossBar = null;
     }
 
 }

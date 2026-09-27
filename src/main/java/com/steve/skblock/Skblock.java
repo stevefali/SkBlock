@@ -134,6 +134,7 @@ public final class Skblock extends JavaPlugin {
                 SkyblockSession skyblockSession = sessionRegistry.getSession(world);
                 if (skyblockSession != null) {
                     skyblockSession.saveDirty();
+                    skyblockSession.onUnload();
                 }
             }
             npcService.removeOrphansFromWorld(world.getName());

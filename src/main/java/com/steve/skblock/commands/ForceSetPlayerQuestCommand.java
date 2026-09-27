@@ -75,6 +75,7 @@ public class ForceSetPlayerQuestCommand implements CommandExecutor, TabCompleter
         skyblockSession.saveAll();
 
         SkyblockSidebar.updateQuestSidebarLines(player.getUniqueId(), skyblockSession);
+        skyblockSession.updateBossBar();
 
         player.sendMessage("§aYour current quest has been set to " + Skblock.getQuestRegistry().getQuest(args[1]).getTitle());
         if (!(sender instanceof Player senderPlayer) || !senderPlayer.getUniqueId().equals(player.getUniqueId())) {
