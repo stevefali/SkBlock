@@ -45,6 +45,10 @@ public class BlockEvent implements Listener {
 
         }
 
+        if (type == Material.BLUE_WOOL) {
+            player.sendMessage(player.getWorld().getBiome(player.getLocation()).toString());
+        }
+
        /* if (type == Material.GOLD_BLOCK) {
             bossBar.addPlayer(player);
         }

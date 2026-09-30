@@ -30,3 +30,6 @@ commands:
     forceSetPlayerScore:
       description: Force-set the given player's Skyblock score
       permission: skyblock.admin
+    setIsland:
+      description: Set the given island in the given Skyblock world
+      permission: skyblock.admin

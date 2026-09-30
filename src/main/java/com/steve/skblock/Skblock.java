@@ -91,6 +91,7 @@ public final class Skblock extends JavaPlugin {
         getCommand("home").setExecutor(new HomeCommand(this));
         getCommand("forceSetPlayerQuest").setExecutor(new ForceSetPlayerQuestCommand());
         getCommand("forceSetPlayerScore").setExecutor(new ForceSetPlayerScoreCommand());
+        getCommand("setIsland").setExecutor(new SetIslandCommand());
 
         MenuProvider.register(this);
 
