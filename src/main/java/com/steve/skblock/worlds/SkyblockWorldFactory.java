@@ -41,6 +41,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -233,7 +235,11 @@ public class SkyblockWorldFactory {
                         } else {
                             Path backupFolderPath = Paths.get(BACKUP_WORLDS_FOLDER);
 
-                            Path backupWorldPath = backupFolderPath.resolve(worldPath.getFileName());
+                            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+                            String timeStamp = LocalDateTime.now().format(timeFormatter);
+                            String backupFolderName = worldPath.getFileName().toString() + "_" + timeStamp;
+
+                            Path backupWorldPath = backupFolderPath.resolve(backupFolderName);
                             Files.createDirectories(backupWorldPath);
 
                             Files.walk(worldPath).forEach(src -> {
