@@ -2,34 +2,34 @@ name: skblock
 version: '1.0-SNAPSHOT'
 main: com.steve.skblock.Skblock
 api-version: '1.21'
-depend: [FastAsyncWorldEdit, MegaNPCs-core, MegaHUD-core]
+depend: [ WorldEdit, MegaNPCs-core, MegaHUD-core ]
 permissions:
   skyblock.admin:
     description: Admin permission
     default: op
 commands:
-    sendplayer:
-      description: Send player to given world
-      permission: skyblock.admin
-    makeworld:
-      description: Make a new skyblock world
-      permission: skyblock.admin
-    deleteworld:
-      description: Delete specified world from skyblock folder
-      permission: skyblock.admin
-    loadworld:
-      description: Load the skyblock world with the specified suffix
-      permission: skyblock.admin
-    lobby:
-      description: Go to the skyblock lobby
-    home:
-      description: Go to the home lobby server
-    forceSetPlayerQuest:
-      description: Force-set the given player's current Skyblock quest to the given quest
-      permission: skyblock.admin
-    forceSetPlayerScore:
-      description: Force-set the given player's Skyblock score
-      permission: skyblock.admin
-    setIsland:
-      description: Set the given island in the given Skyblock world
-      permission: skyblock.admin
+  sendplayer:
+    description: Send player to given world
+    permission: skyblock.admin
+  makeworld:
+    description: Make a new skyblock world
+    permission: skyblock.admin
+  deleteworld:
+    description: Delete specified world from skyblock folder
+    permission: skyblock.admin
+  loadworld:
+    description: Load the skyblock world with the specified suffix
+    permission: skyblock.admin
+  lobby:
+    description: Go to the skyblock lobby
+  home:
+    description: Go to the home lobby server
+  forceSetPlayerQuest:
+    description: Force-set the given player's current Skyblock quest to the given quest
+    permission: skyblock.admin
+  forceSetPlayerScore:
+    description: Force-set the given player's Skyblock score
+    permission: skyblock.admin
+  setIsland:
+    description: Set the given island in the given Skyblock world
+    permission: skyblock.admin

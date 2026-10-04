@@ -3,6 +3,8 @@ package com.steve.skblock.worldoperation;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.function.pattern.Pattern;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.block.BlockType;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -103,13 +105,12 @@ public class CuboidOperation {
                 plugin, () -> {
                     try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
                             .world(BukkitAdapter.adapt(world))
-                            .fastMode(true)
                             .build()) {
 
                         for (int x = start.getBlockX(); x <= finish.getBlockX(); x++) {
                             for (int z = start.getBlockZ(); z <= finish.getBlockZ(); z++) {
                                 for (int y = start.getBlockY(); y <= finish.getBlockY(); y++) {
-                                    editSession.setBlock(x, y, z, blockType);
+                                    editSession.setBlock(new BlockVector3(x, y, z), (Pattern) blockType);
                                 }
                             }
                         }

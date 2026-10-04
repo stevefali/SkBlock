@@ -40,9 +40,12 @@ dependencies {
     // Multiverse-portals
 //    compileOnly("org.mvplugins.multiverse.portals:multiverse-portals:5.1.0-SNAPSHOT")
     // FAWE
-    implementation(platform("com.intellectualsites.bom:bom-newest:1.52")) // Ref: https://github.com/IntellectualSites/bom
-    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
-    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit")
+//    implementation(platform("com.intellectualsites.bom:bom-newest:1.52")) // Ref: https://github.com/IntellectualSites/bom
+//    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")
+//    compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Bukkit")
+
+    // WorldEdit
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.4.2")
 
     // MegaNpcs
     compileOnly("com.github.stevefali:MegaNpcs:v1.1.2")

@@ -2,14 +2,13 @@ package com.steve.skblock.worldoperation;
 
 import com.steve.skblock.Skblock;
 import com.steve.skblock.util.Vector2D;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.ZombieVillager;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -103,19 +102,18 @@ public class IslandSetter {
                 plugin.getLogger().warning("Error pasting schematic: Please specify a section number between 0 and 8");
         }
 
-        CompletableFuture<Boolean> chainedTasks = CompletableFuture.completedFuture(true);
+        CompletableFuture<Boolean> chainedTasks = islandFuture;
         for (Supplier<CompletableFuture<Boolean>> task : barrierTasks) {
             chainedTasks = chainedTasks.thenCompose(ignored -> task.get());
         }
 
-        CompletableFuture.allOf(islandFuture, chainedTasks)
-                .whenComplete((ignored, throwable) -> {
-                    Bukkit.getScheduler().runTask(
-                            plugin, () -> {
-                                performSectionFinishSteps(sectionIndex, world, messageRecipient, throwable);
-                            }
-                    );
-                });
+        chainedTasks.whenComplete((ignored, throwable) -> {
+            Bukkit.getScheduler().runTask(
+                    plugin, () -> {
+                        performSectionFinishSteps(sectionIndex, world, messageRecipient, throwable);
+                    }
+            );
+        });
     }
 
     private static CompletableFuture<Boolean> pasteIsland(World world, String schematicName, Vector2D coords) {
@@ -203,6 +201,9 @@ public class IslandSetter {
             }
             case 7: {
                 islandName = "Ice Spikes";
+                Location villagerLocation = new Location(world, 96.5, 57, 0.5);
+                ZombieVillager zombieVillager = (ZombieVillager) world.spawnEntity(villagerLocation, EntityType.ZOMBIE_VILLAGER);
+                zombieVillager.setVillagerProfession(Villager.Profession.CLERIC);
                 break;
             }
             case 8: {
@@ -214,8 +215,13 @@ public class IslandSetter {
             }
         }
 
+        messageRecipient.playSound(messageRecipient.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
         messageRecipient.sendMessage("§aA new island has appeared: " + islandName + "!");
-
     }
+
+//    private static void cleanLight(int chunkX, int chunkZ, int radius, String worldName) {
+//        plugin.getLogger().info("Cleaning light at chunk " + chunkX + ", " + chunkZ + " in world " + worldName);
+//        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "cleanlight at " + chunkX + " " + chunkZ + " " + radius + " " + worldName);
+//    }
 
 }

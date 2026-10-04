@@ -1,6 +1,5 @@
 package com.steve.skblock.worldoperation;
 
-import com.fastasyncworldedit.core.extent.processor.lighting.RelightMode;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -36,7 +35,7 @@ public class SchematicOperation {
     public static CompletableFuture<Boolean> pasteSchematic(String schematicPath, World world, Plugin plugin, Vector location) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
-        Bukkit.getScheduler().runTaskAsynchronously(
+        Bukkit.getScheduler().runTask(
                 plugin, () -> {
                     try {
                         File schematicFile = new File(schematicPath);
@@ -59,7 +58,6 @@ public class SchematicOperation {
                         try (EditSession editSession = WorldEdit.getInstance()
                                 .newEditSessionBuilder()
                                 .world(BukkitAdapter.adapt(world))
-                                .relightMode(RelightMode.NONE)
                                 .build()) {
 
                             Operation operation = new ClipboardHolder(clipboard)
