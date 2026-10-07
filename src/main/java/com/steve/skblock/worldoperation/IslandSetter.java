@@ -42,38 +42,38 @@ public class IslandSetter {
                 islandFuture = pasteIsland(world, "island_plains.schem", new Vector2D(0, 0));
                 break;
             }
-            case 1: { // Desert
+            case 1: { // Taiga
+                islandFuture = pasteIsland(world, "island_taiga.schem", new Vector2D(0, 100));
+                barrierTasks.add(() -> removeBarrier(new Vector(-50, startY, 51), new Vector(50, endY, 51), world));
+                barrierTasks.add(() -> removeBarrier(new Vector(-50, startY, 600), new Vector(50, endY, 600), world));
+                break;
+            }
+            case 2: { // Desert
                 islandFuture = pasteIsland(world, "island_desert.schem", new Vector2D(0, -100));
                 barrierTasks.add(() -> removeBarrier(new Vector(-50, startY, -51), new Vector(50, endY, -51), world));
                 barrierTasks.add(() -> removeBarrier(new Vector(-50, startY, -600), new Vector(50, endY, -600), world));
                 break;
             }
-            case 2: { // Jungle
+            case 3: { // Jungle
                 islandFuture = pasteIsland(world, "island_jungle.schem", new Vector2D(-100, -100));
                 barrierTasks.add(() -> removeBarrier(new Vector(-51, startY, -599), new Vector(-51, endY, -52), world));
                 barrierTasks.add(() -> removeBarrier(new Vector(-600, startY, -600), new Vector(-51, endY, -600), world));
                 barrierTasks.add(() -> removeBarrier(new Vector(-600, startY, -599), new Vector(-600, endY, -52), world));
                 break;
             }
-            case 3: { // Badlands
+            case 4: { // Badlands
                 islandFuture = pasteIsland(world, "island_badlands.schem", new Vector2D(-100, 0));
                 barrierTasks.add(() -> removeBarrier(new Vector(-599, startY, -51), new Vector(-52, endY, -51), world));
                 barrierTasks.add(() -> removeBarrier(new Vector(-51, startY, -51), new Vector(-51, endY, 50), world));
                 barrierTasks.add(() -> removeBarrier(new Vector(-600, startY, -51), new Vector(-600, endY, 50), world));
                 break;
             }
-            case 4: { // Savanna
+            case 5: { // Savanna
                 islandFuture = pasteIsland(world, "island_savanna.schem", new Vector2D(-100, 100));
                 barrierTasks.add(() -> removeBarrier(new Vector(-599, startY, 51), new Vector(-52, endY, 51), world));
                 barrierTasks.add(() -> removeBarrier(new Vector(-600, startY, 51), new Vector(-600, endY, 599), world));
                 barrierTasks.add(() -> removeBarrier(new Vector(-600, startY, 600), new Vector(-52, endY, 600), world));
-                break;
-            }
-            case 5: { // Taiga
-                islandFuture = pasteIsland(world, "island_taiga.schem", new Vector2D(0, 100));
                 barrierTasks.add(() -> removeBarrier(new Vector(-51, startY, 52), new Vector(-51, endY, 600), world));
-                barrierTasks.add(() -> removeBarrier(new Vector(-51, startY, 51), new Vector(50, endY, 51), world));
-                barrierTasks.add(() -> removeBarrier(new Vector(-50, startY, 600), new Vector(50, endY, 600), world));
                 break;
             }
             case 6: { // Nether
@@ -162,10 +162,14 @@ public class IslandSetter {
                 break;
             }
             case 1: {
-                islandName = "Desert";
+                islandName = "Taiga";
                 break;
             }
             case 2: {
+                islandName = "Desert";
+                break;
+            }
+            case 3: {
                 islandName = "Jungle";
                 Location location = new Location(world, -100, 65, -100);
                 Block block = location.getBlock();
@@ -176,7 +180,7 @@ public class IslandSetter {
                 inventory.setItem(3, new ItemStack(Material.STICK, 4));
                 break;
             }
-            case 3: {
+            case 4: {
                 islandName = "Badlands";
                 Location location = new Location(world, -102, 61, -3);
                 StorageMinecart minecartChest = (StorageMinecart) world.spawnEntity(location, EntityType.CHEST_MINECART);
@@ -185,25 +189,27 @@ public class IslandSetter {
                 minecartInventory.setItem(7, new ItemStack(Material.SHORT_GRASS, 3));
                 break;
             }
-            case 4: {
+            case 5: {
                 islandName = "Savanna";
                 Location location = new Location(world, -103, 67, 99);
                 world.spawnEntity(location, EntityType.BEE);
                 break;
             }
-            case 5: {
-                islandName = "Taiga";
-                break;
-            }
+
             case 6: {
                 islandName = "Nether";
                 break;
             }
             case 7: {
                 islandName = "Ice Spikes";
-                Location villagerLocation = new Location(world, 96.5, 57, 0.5);
-                ZombieVillager zombieVillager = (ZombieVillager) world.spawnEntity(villagerLocation, EntityType.ZOMBIE_VILLAGER);
+                Location zombieVillagerLocation = new Location(world, 96.5, 57.0, 0.5);
+                Location villagerLocation = new Location(world, 98.5, 57.0, 0.5);
+
+                ZombieVillager zombieVillager = (ZombieVillager) world.spawnEntity(zombieVillagerLocation, EntityType.ZOMBIE_VILLAGER);
                 zombieVillager.setVillagerProfession(Villager.Profession.CLERIC);
+                zombieVillager.setPersistent(true);
+
+                world.spawnEntity(villagerLocation, EntityType.VILLAGER);
                 break;
             }
             case 8: {
