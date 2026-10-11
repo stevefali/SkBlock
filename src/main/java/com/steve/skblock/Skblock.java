@@ -3,10 +3,7 @@ package com.steve.skblock;
 import com.steve.MegaHUD.api.MegaHudService;
 import com.steve.MegaNPCs.api.NpcService;
 import com.steve.skblock.commands.*;
-import com.steve.skblock.events.routed.BlockEvent;
-import com.steve.skblock.events.routed.CobbleGenerationEvent;
-import com.steve.skblock.events.routed.InventoryEvent;
-import com.steve.skblock.events.routed.NpcEvent;
+import com.steve.skblock.events.routed.*;
 import com.steve.skblock.events.unrouted.*;
 import com.steve.skblock.game.SessionRegistry;
 import com.steve.skblock.game.SkyblockSession;
@@ -22,6 +19,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -34,7 +32,7 @@ public final class Skblock extends JavaPlugin {
 
 
     private PlayerEvent playerEvent;
-    private CobbleGenerationEvent cobbleGenerationEvent;
+    private BlockGeneratorEvent cobbleGenerationEvent;
     private BlockEvent blockEvent;
     private PortalEvents portalEvents;
 
@@ -66,19 +64,21 @@ public final class Skblock extends JavaPlugin {
         SkyblockSidebar.register(megaHudService);
 
         playerEvent = new PlayerEvent(this, lobbySpawn);
-        cobbleGenerationEvent = new CobbleGenerationEvent(this, sessionRegistry);
+        cobbleGenerationEvent = new BlockGeneratorEvent(this, sessionRegistry);
         blockEvent = new BlockEvent(this, sessionRegistry);
         portalEvents = new PortalEvents(this);
 
 
-        getServer().getPluginManager().registerEvents(playerEvent, this);
-        getServer().getPluginManager().registerEvents(cobbleGenerationEvent, this);
-        getServer().getPluginManager().registerEvents(blockEvent, this);
-        getServer().getPluginManager().registerEvents(portalEvents, this);
-        getServer().getPluginManager().registerEvents(new WorldEvent(this, sessionRegistry), this);
-        getServer().getPluginManager().registerEvents(new InventoryEvent(this, sessionRegistry), this);
-        getServer().getPluginManager().registerEvents(new MegaHudEvent(), this);
-        getServer().getPluginManager().registerEvents(new NpcEvent(sessionRegistry), this);
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(playerEvent, this);
+        pluginManager.registerEvents(cobbleGenerationEvent, this);
+        pluginManager.registerEvents(blockEvent, this);
+        pluginManager.registerEvents(portalEvents, this);
+        pluginManager.registerEvents(new WorldEvent(this, sessionRegistry), this);
+        pluginManager.registerEvents(new InventoryEvent(this, sessionRegistry), this);
+        pluginManager.registerEvents(new MegaHudEvent(), this);
+        pluginManager.registerEvents(new NpcEvent(sessionRegistry), this);
+        pluginManager.registerEvents(new MobSpawnEvent(sessionRegistry), this);
 
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");

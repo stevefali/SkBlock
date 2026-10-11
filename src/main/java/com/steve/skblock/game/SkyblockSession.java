@@ -3,6 +3,8 @@ package com.steve.skblock.game;
 import com.steve.MegaNPCs.api.NpcInteractionEvent;
 import com.steve.skblock.Skblock;
 import com.steve.skblock.game.data.SkyblockDataStore;
+import com.steve.skblock.game.generator.BlockGenerators;
+import com.steve.skblock.game.generator.GeneratorType;
 import com.steve.skblock.game.quest.SkyblockQuest;
 import com.steve.skblock.game.quest.type.CraftingQuest;
 import com.steve.skblock.game.quest.type.HarvestQuest;
@@ -11,21 +13,22 @@ import com.steve.skblock.game.quest.type.TalkToRandyQuest;
 import com.steve.skblock.sidebar.SkyblockSidebar;
 import com.steve.skblock.util.TitlesUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.entity.Hoglin;
+import org.bukkit.entity.PiglinAbstract;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.EnumSet;
 import java.util.UUID;
 
 import static com.steve.skblock.worlds.SkyblockWorldFactory.WORLD_NAME_PREFIX;
@@ -45,6 +48,17 @@ public class SkyblockSession {
     private BossBar bossBar;
 
     private static final Plugin plugin = JavaPlugin.getPlugin(Skblock.class);
+
+    private static final String NETHER_KEY = "skyblock:sky_nether";
+
+    // TODO: Replace this with just initializing with DEFAULT generator.
+    private final EnumSet<GeneratorType> unlockedGenerators = EnumSet.allOf(GeneratorType.class);
+
+//    private boolean allowGenerateSand = false;
+//    private boolean allowGenerateGrass = false;
+//    private boolean allowGenerateTerraCotta = false;
+//    private boolean allowGenerateNetherrack = false;
+//    private boolean allowGenerateEndStone = false;
 
 
     public SkyblockSession(World world, SkyblockDataStore skyblockDataStore) {
@@ -115,11 +129,27 @@ public class SkyblockSession {
 //            addScore(1);
             advanceQuest(1);
         }
+        if (event.getBlock().getType() == Material.BLUE_WOOL) {
+            System.out.println(event.getBlock().getBiome().getKey().toString());
+        }
     }
 
 
-    public void onGenerateCobble(BlockFormEvent event) {
+    public void onGenerateBlock(BlockFormEvent event) {
+//        String biomeName = event.getBlock().getBiome().toString().split(":")[1];
+        NamespacedKey biomeKey = event.getBlock().getBiome().getKey();
+        GeneratorType generatorType = BlockGenerators.GENERATOR_BIOMES.getOrDefault(biomeKey, GeneratorType.DEFAULT);
+        if (!isGeneratorUnlocked(generatorType)) {
+            generatorType = GeneratorType.DEFAULT;
+        }
 
+        Material generatedBlock = BlockGenerators.GENERATORS.get(generatorType).getRandomEntry();
+        event.getNewState().setType(generatedBlock);
+
+        // TODO: Remove this!
+//        for (Map.Entry<Material, String> entry : BlockGenerators.GENERATORS.get(generatorType).getPercentages().entrySet()) {
+//            plugin.getLogger().info(entry.getKey().name() + ": " + entry.getValue() + "%");
+//        }
     }
 
     public void onNpcInteract(NpcInteractionEvent event) {
@@ -138,6 +168,16 @@ public class SkyblockSession {
     public void onBlockPlaced(BlockPlaceEvent event) {
         if (getCurrentQuest() instanceof PlacingQuest placingQuest && event.getBlockPlaced().getType() == placingQuest.getMaterial()) {
             advanceQuest(1);
+        }
+    }
+
+    public void onCreatureSpawn(CreatureSpawnEvent event) {
+        if (event.getEntity() instanceof PiglinAbstract piglinAbstract
+                && piglinAbstract.getLocation().getBlock().getBiome().getKey().toString().equals(NETHER_KEY)) {
+            piglinAbstract.setImmuneToZombification(true);
+        } else if (event.getEntity() instanceof Hoglin hoglin
+                && hoglin.getLocation().getBlock().getBiome().getKey().toString().equals(NETHER_KEY)) {
+            hoglin.setImmuneToZombification(true);
         }
     }
 
@@ -205,6 +245,10 @@ public class SkyblockSession {
     public void forceSetScore(int score) {
         this.skyblockScore = score;
         saveAll();
+    }
+
+    public boolean isGeneratorUnlocked(GeneratorType type) {
+        return unlockedGenerators.contains(type);
     }
 
     public void onUnload() {
