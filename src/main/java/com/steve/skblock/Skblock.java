@@ -120,6 +120,7 @@ public final class Skblock extends JavaPlugin {
         }
 
         sessionRegistry.scheduleAutoSaves(this);
+        sessionRegistry.startBiomeTask();
     }
 
     @Override
@@ -143,6 +144,7 @@ public final class Skblock extends JavaPlugin {
         NPC_IDS.clear();
         npcService = null;
 
+        sessionRegistry.stopBiomeTask();
         sessionRegistry.stopAutoSaves();
         sessionRegistry.unregisterAll();
 

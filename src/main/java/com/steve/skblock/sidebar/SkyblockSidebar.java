@@ -6,8 +6,9 @@ import com.steve.skblock.Skblock;
 import com.steve.skblock.game.SkyblockProgress;
 import com.steve.skblock.game.SkyblockSession;
 import com.steve.skblock.game.quest.SkyblockQuest;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
+import com.steve.skblock.util.NameFormatter;
+import org.bukkit.*;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,8 @@ public class SkyblockSidebar {
     private static final int QUEST_DESCRIPTION_INDEX = 3;
     private static final int QUEST_PROGRESS_INDEX = 4;
     private static final int SKYBLOCK_SCORE_INDEX = 6;
+    private static final int ISLAND_INDEX = 8;
+    private static final int PERCENTAGES_START_INDEX = 9;
 
     public static void register(MegaHudService megaHudService) {
         hudService = megaHudService;
@@ -50,13 +53,16 @@ public class SkyblockSidebar {
             SkyblockSession skyblockSession = Skblock.getSessionRegistry().getSession(skyblockWorld);
             if (skyblockSession != null) {
                 playerScore = skyblockSession.getSkyblockScore();
-
                 if (skyblockWorld.getName().equals(worldName)) {
-//                    SkyblockProgress currentProgress = skyblockSession.getSkyblockProgress();
-//                    if (currentProgress != null) {
-//                        SkyblockQuest currentQuest = Skblock.getQuestRegistry().getQuest(currentProgress.getCurrentQuestId());
                     updateQuestSidebarLines(playerId, skyblockSession);
-//                    }
+
+                    Bukkit.getScheduler().runTaskLater(
+                            JavaPlugin.getPlugin(Skblock.class), () -> {
+                                Location playerLocation = Bukkit.getPlayer(playerId).getLocation();
+                                NamespacedKey playerBiome = skyblockWorld.getBiome(playerLocation).getKey();
+                                setIslandLine(playerId, NameFormatter.format(playerBiome.getKey()));
+                            }, 1L
+                    );
                 }
             }
         }
@@ -76,6 +82,11 @@ public class SkyblockSidebar {
                 setQuestProgressLine(playerId, currentProgress.getCurrentQuestProgress(), currentQuest.getTargetAmount());
             }
         }
+    }
+
+    public static void updateIslandLines(UUID playerId, String islandName, Map<Material, String> percentages) {
+        setIslandLine(playerId, islandName);
+        setPercentageLines(playerId, percentages);
     }
 
 
@@ -100,6 +111,7 @@ public class SkyblockSidebar {
 //        skyblockSidebarBaseLines.put(3, SidebarLine.BLANK);
 //        skyblockSidebarBaseLines.put(4, SidebarLine.BLANK);
         skyblockSidebarBaseLines.put(5, SidebarLine.BLANK);
+        skyblockSidebarBaseLines.put(7, SidebarLine.BLANK);
     }
 
     public static void setSkyblockScoreLine(UUID playerId, int score) {
@@ -116,6 +128,26 @@ public class SkyblockSidebar {
 
     public static void setQuestProgressLine(UUID playerId, int questProgress, int targetAmount) {
         hudService.setSidebarLine(playerId, QUEST_PROGRESS_INDEX, SidebarLine.leftSideOnly("Progress: §l" + questProgress + "/" + targetAmount));
+    }
+
+    public static void setIslandLine(UUID playerId, String islandName) {
+        hudService.setSidebarLine(playerId, ISLAND_INDEX, SidebarLine.leftSideOnly("Island: §b§l" + islandName));
+    }
+
+    public static void setPercentageLines(UUID playerId, Map<Material, String> percentages) {
+        for (int i = 5; i < 11; i++) {
+            hudService.removeSidebarLine(playerId, PERCENTAGES_START_INDEX + i);
+        }
+        int index = 0;
+        for (Map.Entry<Material, String> entry : percentages.entrySet()) {
+            hudService.setSidebarLine(
+                    playerId,
+                    PERCENTAGES_START_INDEX + index,
+//                    SidebarLine.bothSides("§7" + NameFormatter.format(entry.getKey().name()) + ": ", "§e" + entry.getValue() + "%")
+                    SidebarLine.rightSideOnly("§7" + NameFormatter.format(entry.getKey().name()) + ": " + entry.getValue() + "%")
+            );
+            index++;
+        }
     }
 
 }

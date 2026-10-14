@@ -1,6 +1,7 @@
 package com.steve.skblock.worldoperation;
 
 import com.steve.skblock.Skblock;
+import com.steve.skblock.game.generator.GeneratorType;
 import com.steve.skblock.util.Vector2D;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.world.phys.Vec3;
@@ -183,6 +184,7 @@ public class IslandSetter {
             case 2: {
                 islandName = "Desert";
                 islandLocation = getIslandVec3(DESERT_COORDS);
+                Skblock.getSessionRegistry().getSession(world).unlockGenerator(GeneratorType.SAND);
                 break;
             }
             case 3: {
@@ -196,6 +198,7 @@ public class IslandSetter {
                 inventory.setItem(3, new ItemStack(Material.STICK, 4));
 
                 islandLocation = getIslandVec3(JUNGLE_COORDS);
+                Skblock.getSessionRegistry().getSession(world).unlockGenerator(GeneratorType.GRASS_BLOCK);
                 break;
             }
             case 4: {
@@ -206,6 +209,7 @@ public class IslandSetter {
                 Inventory minecartInventory = minecartChest.getInventory();
                 minecartInventory.setItem(7, new ItemStack(Material.SHORT_GRASS, 3));
                 islandLocation = getIslandVec3(BADLANDS_COORDS);
+                Skblock.getSessionRegistry().getSession(world).unlockGenerator(GeneratorType.TERRACOTTA);
                 break;
             }
             case 5: {
@@ -213,12 +217,14 @@ public class IslandSetter {
                 Location location = new Location(world, -103, 67, 99);
                 world.spawnEntity(location, EntityType.BEE);
                 islandLocation = getIslandVec3(SAVANNA_COORDS);
+                Skblock.getSessionRegistry().getSession(world).unlockGenerator(GeneratorType.DEEPSLATE);
                 break;
             }
 
             case 6: {
                 islandName = "Nether";
                 islandLocation = getIslandVec3(NETHER_COORDS);
+                Skblock.getSessionRegistry().getSession(world).unlockGenerator(GeneratorType.NETHERRACK);
                 break;
             }
             case 7: {
@@ -237,6 +243,7 @@ public class IslandSetter {
             case 8: {
                 islandName = "The End";
                 islandLocation = getIslandVec3(END_COORDS);
+                Skblock.getSessionRegistry().getSession(world).unlockGenerator(GeneratorType.END_STONE);
                 break;
             }
             default: {

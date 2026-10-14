@@ -11,6 +11,7 @@ import com.steve.skblock.game.quest.type.HarvestQuest;
 import com.steve.skblock.game.quest.type.PlacingQuest;
 import com.steve.skblock.game.quest.type.TalkToRandyQuest;
 import com.steve.skblock.sidebar.SkyblockSidebar;
+import com.steve.skblock.util.NameFormatter;
 import com.steve.skblock.util.TitlesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
@@ -51,14 +52,8 @@ public class SkyblockSession {
 
     private static final String NETHER_KEY = "skyblock:sky_nether";
 
-    // TODO: Replace this with just initializing with DEFAULT generator.
-    private final EnumSet<GeneratorType> unlockedGenerators = EnumSet.allOf(GeneratorType.class);
+    private final EnumSet<GeneratorType> unlockedGenerators = EnumSet.of(GeneratorType.DEFAULT);
 
-//    private boolean allowGenerateSand = false;
-//    private boolean allowGenerateGrass = false;
-//    private boolean allowGenerateTerraCotta = false;
-//    private boolean allowGenerateNetherrack = false;
-//    private boolean allowGenerateEndStone = false;
 
 
     public SkyblockSession(World world, SkyblockDataStore skyblockDataStore) {
@@ -130,7 +125,7 @@ public class SkyblockSession {
             advanceQuest(1);
         }
         if (event.getBlock().getType() == Material.BLUE_WOOL) {
-            System.out.println(event.getBlock().getBiome().getKey().toString());
+            System.out.println(NameFormatter.format(event.getBlock().getType().name()));
         }
     }
 
@@ -182,7 +177,7 @@ public class SkyblockSession {
     }
 
 
-    private World getWorld() {
+    public World getWorld() {
         World world = Bukkit.getWorld(worldId);
         if (world == null) {
             throw new NullPointerException("World with id " + worldId + " is null!");
@@ -249,6 +244,11 @@ public class SkyblockSession {
 
     public boolean isGeneratorUnlocked(GeneratorType type) {
         return unlockedGenerators.contains(type);
+    }
+
+    public void unlockGenerator(GeneratorType generatorType) {
+        this.unlockedGenerators.add(generatorType);
+        getPlayer().sendMessage("§aNew generator type unlocked: " + NameFormatter.format(generatorType.name()));
     }
 
     public void onUnload() {
