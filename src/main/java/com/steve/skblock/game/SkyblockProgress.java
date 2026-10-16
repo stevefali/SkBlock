@@ -1,13 +1,22 @@
 package com.steve.skblock.game;
 
+import com.steve.skblock.game.generator.GeneratorType;
+
+import java.util.HashSet;
+import java.util.Set;
+
 public class SkyblockProgress {
 
     private String currentQuestId;
     private int currentQuestProgress;
+    private final Set<String> unlockedGenerators = new HashSet<>(Set.of(GeneratorType.DEFAULT.name()));
 
     public SkyblockProgress(String startingQuestId) {
         this.currentQuestId = startingQuestId;
         this.currentQuestProgress = 0;
+    }
+
+    private SkyblockProgress() {
     }
 
     public void onQuestComplete(String nextQuestId) {
@@ -42,6 +51,14 @@ public class SkyblockProgress {
     public void forceSetQuest(String questId, int questProgress) {
         this.currentQuestId = questId;
         this.currentQuestProgress = questProgress;
+    }
+
+    public boolean isGeneratorUnlocked(GeneratorType generatorType) {
+        return unlockedGenerators.contains(generatorType.name());
+    }
+
+    public void unlockGenerator(GeneratorType generatorType) {
+        unlockedGenerators.add(generatorType.name());
     }
 
 }

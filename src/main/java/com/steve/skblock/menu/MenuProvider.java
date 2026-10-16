@@ -2,6 +2,8 @@ package com.steve.skblock.menu;
 
 import com.steve.skblock.Skblock;
 import com.steve.skblock.game.SessionRegistry;
+import com.steve.skblock.game.SkyblockSession;
+import com.steve.skblock.menu.shop.ShopMenu;
 import com.steve.skblock.util.TitlesUtils;
 import com.steve.skblock.util.teleport.ProxyTeleport;
 import com.steve.skblock.util.teleport.SkyblockWorldTeleport;
@@ -15,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +77,7 @@ public class MenuProvider {
                         "§eThis action can not be undone."
                 ),
                 event -> {
+                    event.setCancelled(true);
                     Player player = (Player) event.getWhoClicked();
                     player.sendMessage("§8Deleting your skyblock world...");
                     String playerUuid = player.getUniqueId().toString();
@@ -98,11 +100,26 @@ public class MenuProvider {
                 }
         );
 
+        MenuItem skyblockShop = new MenuItem(
+                9,
+                Material.DIAMOND,
+                "§eSkyblock Shop",
+                List.of("Buy and sell your items"),
+                event -> {
+                    Player player = (Player) event.getWhoClicked();
+                    World world = player.getWorld();
+                    SkyblockSession session = sessionRegistry.getSession(world);
+                    ShopMenu shopMenu = session.getShopMenu();
+                    shopMenu.updateUI();
+                    player.openInventory(shopMenu.getInventory());
+                }
+        );
+
         // Lobby Menu
         addItem(lobbyMenu, mainLobbyTeleport, worldTeleport, worldDelete);
 
         // Skyblock Menu
-        addItem(skyblockMenu, mainLobbyTeleport, skyblockLobbyTeleport);
+        addItem(skyblockMenu, skyblockShop, mainLobbyTeleport, skyblockLobbyTeleport);
 
     }
 

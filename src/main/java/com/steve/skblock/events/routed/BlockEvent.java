@@ -2,6 +2,7 @@ package com.steve.skblock.events.routed;
 
 import com.steve.skblock.game.SessionRegistry;
 import com.steve.skblock.game.SkyblockSession;
+import com.steve.skblock.menu.shop.ShopMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
@@ -12,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 
@@ -46,7 +48,14 @@ public class BlockEvent implements Listener {
         }
 
         if (type == Material.BLUE_WOOL) {
-            player.sendMessage(player.getWorld().getBiome(player.getLocation()).toString());
+//            Map<Integer,  ? extends ItemStack> matchedStacks = player.getInventory().all(Material.STICK);
+//            for (Map.Entry entry : matchedStacks.entrySet()) {
+//                ItemStack stack = (ItemStack) entry.getValue();
+//                System.out.println(NameFormatter.format(stack.getType().name()) + ": " + stack.getAmount() + ", slot: " + entry.getKey());
+//            }
+
+            boolean success = ShopMenu.payItemPrice(event.getPlayer(), new ItemStack(Material.STICK, 10));
+            System.out.println("Success? " + success);
         }
 
        /* if (type == Material.GOLD_BLOCK) {
