@@ -10,7 +10,6 @@ import com.steve.skblock.game.quest.type.CraftingQuest;
 import com.steve.skblock.game.quest.type.HarvestQuest;
 import com.steve.skblock.game.quest.type.PlacingQuest;
 import com.steve.skblock.game.quest.type.TalkToRandyQuest;
-import com.steve.skblock.menu.shop.ShopMenu;
 import com.steve.skblock.sidebar.SkyblockSidebar;
 import com.steve.skblock.util.NameFormatter;
 import com.steve.skblock.util.TitlesUtils;
@@ -52,7 +51,7 @@ public class SkyblockSession {
 
     private static final String NETHER_KEY = "skyblock:sky_nether";
 
-    private final ShopMenu shopMenu;
+//    private final ShopMenu shopMenu;
 
 //    private final EnumSet<GeneratorType> unlockedGenerators = EnumSet.of(GeneratorType.DEFAULT);
 
@@ -74,7 +73,7 @@ public class SkyblockSession {
         updateBossBar();
         showBossBar(getPlayer());
 
-        shopMenu = new ShopMenu(9 * 3, getPlayer(), this);
+//        shopMenu = new ShopMenu(9 * 3, this);
     }
 
     public void saveAll() {
@@ -243,10 +242,6 @@ public class SkyblockSession {
     public void forceSetScore(int score) {
         this.skyblockScore = score;
         saveAll();
-    }
-
-    public ShopMenu getShopMenu() {
-        return shopMenu;
     }
 
     public void unlockGenerator(GeneratorType generatorType) {

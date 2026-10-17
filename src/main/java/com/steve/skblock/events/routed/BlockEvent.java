@@ -2,19 +2,18 @@ package com.steve.skblock.events.routed;
 
 import com.steve.skblock.game.SessionRegistry;
 import com.steve.skblock.game.SkyblockSession;
-import com.steve.skblock.menu.shop.ShopMenu;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 
 public class BlockEvent implements Listener {
@@ -22,11 +21,39 @@ public class BlockEvent implements Listener {
     private final Plugin plugin;
     private final SessionRegistry sessionRegistry;
 
-    private BossBar bossBar =Bukkit.createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
+    private static ArrayList<Sound> sounds = new ArrayList<>(List.of(
+//            Sound.BLOCK_ENCHANTMENT_TABLE_USE,
+//            Sound.BLOCK_GLASS_BREAK,
+//            Sound.BLOCK_HEAVY_CORE_BREAK,
+            Sound.BLOCK_NOTE_BLOCK_CHIME,
+//            Sound.BLOCK_NOTE_BLOCK_FLUTE,
+//            Sound.BLOCK_NOTE_BLOCK_SNARE,
+//            Sound.BLOCK_NOTE_BLOCK_XYLOPHONE,
+//            Sound.BLOCK_NOTE_BLOCK_BANJO,
+//            Sound.BLOCK_NOTE_BLOCK_BASEDRUM,
+//            Sound.BLOCK_NOTE_BLOCK_BASS,
+//            Sound.BLOCK_NOTE_BLOCK_BELL,
+//            Sound.BLOCK_NOTE_BLOCK_COW_BELL,
+            Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO,
+//            Sound.BLOCK_NOTE_BLOCK_FLUTE,
+//            Sound.BLOCK_NOTE_BLOCK_GUITAR,
+//            Sound.BLOCK_NOTE_BLOCK_HARP,
+//            Sound.BLOCK_NOTE_BLOCK_PLING,
+//            Sound.BLOCK_NOTE_BLOCK_BIT,
+            Sound.BLOCK_RESPAWN_ANCHOR_CHARGE
+//            Sound.ENTITY_ALLAY_HURT,
+//            Sound.ENTITY_BLAZE_HURT,
+//            Sound.ENTITY_BREEZE_DEFLECT,
+//            Sound.ENTITY_DOLPHIN_HURT,
+//            Sound.ENTITY_PANDA_SNEEZE,
+//            Sound.ITEM_OMINOUS_BOTTLE_DISPOSE
+    ));
+    private static int currentSound = 0;
 
     public BlockEvent(Plugin plugin, SessionRegistry sessionRegistry) {
         this.plugin = plugin;
         this.sessionRegistry = sessionRegistry;
+        sounds.sort(Comparator.comparing(Sound::toString));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -48,14 +75,23 @@ public class BlockEvent implements Listener {
         }
 
         if (type == Material.BLUE_WOOL) {
-//            Map<Integer,  ? extends ItemStack> matchedStacks = player.getInventory().all(Material.STICK);
-//            for (Map.Entry entry : matchedStacks.entrySet()) {
-//                ItemStack stack = (ItemStack) entry.getValue();
-//                System.out.println(NameFormatter.format(stack.getType().name()) + ": " + stack.getAmount() + ", slot: " + entry.getKey());
-//            }
-
-            boolean success = ShopMenu.payItemPrice(event.getPlayer(), new ItemStack(Material.STICK, 10));
-            System.out.println("Success? " + success);
+            currentSound++;
+            if (currentSound > sounds.size() - 1) {
+                currentSound = 0;
+            }
+        }
+        if (type == Material.YELLOW_WOOL) {
+            currentSound--;
+            if (currentSound < 0) {
+                currentSound = sounds.size() - 1;
+            }
+        }
+        if (type == Material.GREEN_WOOL) {
+            player.playSound(player.getLocation(), sounds.get(currentSound), 2.0f, 1.0f);
+            player.sendMessage("Index: " + currentSound + ", Sound: " + sounds.get(currentSound).toString());
+        }
+        if (type == Material.RED_WOOL) {
+            player.stopAllSounds();
         }
 
        /* if (type == Material.GOLD_BLOCK) {

@@ -109,8 +109,7 @@ public class MenuProvider {
                     Player player = (Player) event.getWhoClicked();
                     World world = player.getWorld();
                     SkyblockSession session = sessionRegistry.getSession(world);
-                    ShopMenu shopMenu = session.getShopMenu();
-                    shopMenu.updateUI();
+                    ShopMenu shopMenu = new ShopMenu(9 * 3, session, player);
                     player.openInventory(shopMenu.getInventory());
                 }
         );

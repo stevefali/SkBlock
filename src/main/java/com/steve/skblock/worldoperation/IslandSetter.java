@@ -1,10 +1,7 @@
 package com.steve.skblock.worldoperation;
 
 import com.steve.skblock.Skblock;
-import com.steve.skblock.game.SkyblockSession;
 import com.steve.skblock.game.generator.GeneratorType;
-import com.steve.skblock.menu.shop.ShopItem;
-import com.steve.skblock.menu.shop.ShopMenu;
 import com.steve.skblock.util.Vector2D;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.world.phys.Vec3;
@@ -187,8 +184,7 @@ public class IslandSetter {
             case 2: {
                 islandName = "Desert";
                 islandLocation = getIslandVec3(DESERT_COORDS);
-                SkyblockSession session = Skblock.getSessionRegistry().getSession(world);
-                session.unlockGenerator(GeneratorType.SAND);
+                Skblock.getSessionRegistry().getSession(world).unlockGenerator(GeneratorType.SAND);
                 break;
             }
             case 3: {
@@ -221,10 +217,7 @@ public class IslandSetter {
                 Location location = new Location(world, -103, 67, 99);
                 world.spawnEntity(location, EntityType.BEE);
                 islandLocation = getIslandVec3(SAVANNA_COORDS);
-                SkyblockSession session = Skblock.getSessionRegistry().getSession(world);
-                session.unlockGenerator(GeneratorType.DEEPSLATE);
-                List<ShopItem> unlockItems = List.of(ShopMenu.LAVA);
-                session.getShopMenu().unlockItems(unlockItems);
+                Skblock.getSessionRegistry().getSession(world).unlockGenerator(GeneratorType.DEEPSLATE);
                 break;
             }
 
