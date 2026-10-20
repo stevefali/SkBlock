@@ -157,7 +157,8 @@ Since I knew I would want a lot of quests, I certainly didn't want to hard-code 
     - I made a `QuestRegistry` class that iterates through the YML and delegates/assigns each quest based on its Quest Type.
 				
         - This is done by having a `Map<String, QuestTypeFactory>` where the keys are as strings representing the quest type (e.g., "harvest") and the value is a functional interface, `QuestTypeFactory`, which has the method `build(String id, ConfigurationSection section)`.
-				- Then, I "register" each quest type by basically defining which Quest Type class to use and how to extract each parameter in its constructor from the YML object for that quest.
+				
+			- Then, I "register" each quest type by basically defining which Quest Type class to use and how to extract each parameter in its constructor from the YML object for that quest.
 				
         Like this:
       
