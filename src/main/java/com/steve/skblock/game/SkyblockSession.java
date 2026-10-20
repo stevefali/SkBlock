@@ -248,6 +248,7 @@ public class SkyblockSession {
         this.skyblockProgress.unlockGenerator(generatorType);
         saveAll();
         getPlayer().sendMessage("§aNew generator type unlocked: " + NameFormatter.format(generatorType.name()));
+        getPlayer().sendMessage("§aYou have unlocked new items in the Skyblock Shop!");
     }
 
     public void onUnload() {
