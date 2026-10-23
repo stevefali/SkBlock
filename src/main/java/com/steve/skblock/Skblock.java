@@ -79,6 +79,7 @@ public final class Skblock extends JavaPlugin {
         pluginManager.registerEvents(new MegaHudEvent(), this);
         pluginManager.registerEvents(new NpcEvent(sessionRegistry), this);
         pluginManager.registerEvents(new MobSpawnEvent(sessionRegistry), this);
+        pluginManager.registerEvents(new ProtectServerEvents(), this);
 
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");

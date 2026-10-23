@@ -11,7 +11,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -40,6 +40,7 @@ public class PlayerEvent implements Listener {
 
         Player player = event.getPlayer();
         player.teleport(lobbySpawn);
+        event.setJoinMessage(null);
 
         NpcFactory.showNPCs(player.getWorld().getName(), player);
 
@@ -52,6 +53,7 @@ public class PlayerEvent implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         UUID playerId = event.getPlayer().getUniqueId();
 
+        event.setQuitMessage(null);
 
         String worldName = WORLD_NAME_PREFIX + event.getPlayer().getUniqueId();
         removeWorldNpcs(worldName);
@@ -94,10 +96,17 @@ public class PlayerEvent implements Listener {
         SkyblockSidebar.showSidebar(player.getUniqueId(), toWorld.getName());
     }
 
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        event.setDeathMessage(null);
+    }
+
     private void removeWorldNpcs(String worldName) {
         Skblock.getNpcService().removeAllNpcsInWorld(worldName);
         Skblock.getNpcIds().remove(worldName);
-        Skblock.getNpcService().removeOrphansFromWorld(worldName);
+        if (Bukkit.getWorld(worldName) != null) {
+            Skblock.getNpcService().removeOrphansFromWorld(worldName);
+        }
     }
 
 

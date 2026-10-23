@@ -58,7 +58,12 @@
     []
   ],
   "has_precipitation": false,
-  "spawn_costs": {},
+  "spawn_costs": {
+    "minecraft:hoglin": {
+      "charge": 1.0,
+      "energy_budget": 0.01
+    }
+  },
   "spawners": {
     "ambient": [],
     "axolotls": [],
@@ -74,15 +79,27 @@
     "monster": [
       {
         "type": "minecraft:enderman",
-        "maxCount": 4,
+        "maxCount": 2,
         "minCount": 1,
-        "weight": 30
+        "weight": 10
       },
       {
         "type": "minecraft:skeleton",
-        "maxCount": 4,
+        "maxCount": 2,
         "minCount": 1,
-        "weight": 30
+        "weight": 10
+      },
+      {
+        "type": "minecraft:piglin",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 10
+      },
+      {
+        "type": "minecraft:hoglin",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 1
       }
     ],
     "underground_water_creature": [],
