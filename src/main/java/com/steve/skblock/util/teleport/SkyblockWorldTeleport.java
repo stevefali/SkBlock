@@ -23,7 +23,12 @@ public class SkyblockWorldTeleport {
                 })
                 .thenApply(playerWorldName -> {
                     World skyblockWorld = Bukkit.getWorld(playerWorldName);
-                    Skblock.getSessionRegistry().createSession(skyblockWorld);
+                    SkyblockSession skyblockSession = Skblock.getSessionRegistry().createSession(skyblockWorld);
+                    if (skyblockSession.getCurrentQuest() == null) {
+                        player.sendMessage("§eThere was an error loading your world");
+                        plugin.getLogger().warning("Error: Current Quest is null for Skyblock world " + playerWorldName);
+                        return playerWorldName;
+                    }
                     NpcFactory.createNpcs(skyblockWorld, plugin);
                     Location spawnLocation = skyblockWorld.getSpawnLocation();
                     player.teleport(spawnLocation);

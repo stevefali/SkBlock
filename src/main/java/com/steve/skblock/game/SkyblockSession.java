@@ -6,10 +6,7 @@ import com.steve.skblock.game.data.SkyblockDataStore;
 import com.steve.skblock.game.generator.BlockGenerators;
 import com.steve.skblock.game.generator.GeneratorType;
 import com.steve.skblock.game.quest.SkyblockQuest;
-import com.steve.skblock.game.quest.type.CraftingQuest;
-import com.steve.skblock.game.quest.type.HarvestQuest;
-import com.steve.skblock.game.quest.type.PlacingQuest;
-import com.steve.skblock.game.quest.type.TalkToRandyQuest;
+import com.steve.skblock.game.quest.type.*;
 import com.steve.skblock.sidebar.SkyblockSidebar;
 import com.steve.skblock.util.NameFormatter;
 import com.steve.skblock.util.TitlesUtils;
@@ -101,6 +98,9 @@ public class SkyblockSession {
     }
 
     public void advanceQuest(int amount) {
+        if (getCurrentQuest() instanceof QuestlineCompletedQuest) {
+            return;
+        }
         skyblockProgress.setCurrentQuestProgress(skyblockProgress.getCurrentQuestProgress() + amount);
         Player player = getPlayer();
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1.5f, 2.5f);
@@ -202,7 +202,9 @@ public class SkyblockSession {
         addScore(currentQuest.getReward());
         if (currentQuest.getRewardAction() != null) {
             currentQuest.performRewardAction(player);
-            player.sendMessage(currentQuest.getRewardMessage());
+            if (currentQuest.getRewardMessage() != null) {
+                player.sendMessage(currentQuest.getRewardMessage());
+            }
         }
 
         Bukkit.getScheduler().runTaskLater(
@@ -220,7 +222,13 @@ public class SkyblockSession {
 
     public void updateBossBar() {
         SkyblockQuest currentQuest = getCurrentQuest();
-        String progress = " §l(" + skyblockProgress.getCurrentQuestProgress() + "/" + currentQuest.getTargetAmount() + ")";
+        if (currentQuest == null) {
+            return;
+        }
+        String progress = (currentQuest instanceof QuestlineCompletedQuest)
+                ? ""
+                : " §l(" + skyblockProgress.getCurrentQuestProgress() + "/" + currentQuest.getTargetAmount() + ")";
+//        String progress = " §l(" + skyblockProgress.getCurrentQuestProgress() + "/" + currentQuest.getTargetAmount() + ")";
         bossBar.setTitle("§3§l" + currentQuest.getDescription() + progress);
     }
 
@@ -228,7 +236,7 @@ public class SkyblockSession {
         bossBar.removePlayer(getPlayer());
     }
 
-    private SkyblockQuest getCurrentQuest() {
+    public SkyblockQuest getCurrentQuest() {
         return Skblock.getQuestRegistry().getQuest(skyblockProgress.getCurrentQuestId());
     }
 

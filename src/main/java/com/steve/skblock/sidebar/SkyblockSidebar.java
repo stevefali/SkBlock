@@ -6,6 +6,7 @@ import com.steve.skblock.Skblock;
 import com.steve.skblock.game.SkyblockProgress;
 import com.steve.skblock.game.SkyblockSession;
 import com.steve.skblock.game.quest.SkyblockQuest;
+import com.steve.skblock.game.quest.type.QuestlineCompletedQuest;
 import com.steve.skblock.util.NameFormatter;
 import org.bukkit.*;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -79,6 +80,11 @@ public class SkyblockSidebar {
             if (currentQuest != null) {
                 setQuestLine(playerId, currentQuest.getTitle());
                 setQuestDescriptionLine(playerId, currentQuest.getDescription());
+
+                if (currentQuest instanceof QuestlineCompletedQuest) {
+                    hudService.setSidebarLine(playerId, QUEST_PROGRESS_INDEX, SidebarLine.BLANK);
+                    return;
+                }
                 setQuestProgressLine(playerId, currentProgress.getCurrentQuestProgress(), currentQuest.getTargetAmount());
             }
         }

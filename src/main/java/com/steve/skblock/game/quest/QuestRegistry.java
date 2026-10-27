@@ -1,9 +1,6 @@
 package com.steve.skblock.game.quest;
 
-import com.steve.skblock.game.quest.type.CraftingQuest;
-import com.steve.skblock.game.quest.type.HarvestQuest;
-import com.steve.skblock.game.quest.type.PlacingQuest;
-import com.steve.skblock.game.quest.type.TalkToRandyQuest;
+import com.steve.skblock.game.quest.type.*;
 import com.steve.skblock.game.quest.type.action.CustomAction;
 import com.steve.skblock.game.quest.type.action.GiveItemAction;
 import com.steve.skblock.game.quest.type.action.SetIslandAction;
@@ -133,6 +130,13 @@ public class QuestRegistry {
                         section.getInt(REWARD_KEY),
                         buildRewardActionFromConfig(section.getConfigurationSection(ACTION_KEY)),
                         section.getString(NEXT_KEY)
+                )
+        );
+        questTypeFactories.put(
+                "line_completed", (id, section) -> new QuestlineCompletedQuest(
+                        id,
+                        section.getString(TITLE_KEY),
+                        section.getString(DESCRIPTION_KEY)
                 )
         );
 

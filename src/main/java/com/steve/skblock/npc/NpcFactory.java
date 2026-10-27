@@ -4,7 +4,6 @@ import com.steve.MegaNPCs.api.NpcService;
 import com.steve.skblock.Skblock;
 import com.steve.skblock.menu.InventoryMenu;
 import com.steve.skblock.menu.MenuProvider;
-import com.steve.skblock.util.TitlesUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -12,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import javax.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -57,14 +55,8 @@ public class NpcFactory {
                         "Randy",
                         "Randy",
                         player -> {
-                            TitlesUtils.sendSubtitle(player, "Welcome to your skyblock World, " + player.getName(), 7, 30, 7);
                             InventoryMenu inventoryMenu = MenuProvider.getMenu(MenuProvider.SKYBLOCK_MENU_KEY);
                             player.openInventory(inventoryMenu.getInventory());
-//                            Bukkit.getScheduler().runTaskLater(
-//                                    plugin, () -> {
-//                                        player.teleport(Skblock.getLobbySpawn());
-//                                    }, 40L
-//                            );
                         },
                         null,
                         NPC_TITLE_SCALE,

@@ -8,10 +8,7 @@ quests:
     amount: 5
     description: 'Harvest 5 Oak Logs'
     reward: 1
-    action:
-      action_type: give_item
-      action_material: GOLD_BLOCK
-      material_quantity: 3
+    action: null
     next: craft_wooden_axe
   craft_wooden_axe:
     type: craft
@@ -20,9 +17,7 @@ quests:
     amount: 1
     description: 'Craft a Wooden Axe'
     reward: 1
-    action:
-      action_type: custom
-      custom_action_name: TestAction
+    action: null
     next: craft_wooden_shovel
   craft_wooden_shovel:
     type: craft
@@ -59,13 +54,37 @@ quests:
     next: plant_oak
   plant_oak:
     type: place
-    title: 'Let it Grow'
+    title: 'Sow What You Reap'
     material: OAK_SAPLING
     amount: 6
     description: 'Plant 6 Oak Saplings'
+    reward: 2
+    action: null
+    next: logger
+  logger:
+    type: harvest
+    title: 'Sow What You Reap'
+    material: OAK_LOG
+    amount: 32
+    description: 'Harvest 32 Oak Logs'
     reward: 5
+    action: null
+    next: randy_get_taiga
+  randy_get_taiga:
+    type: talk_randy
+    title: 'Sow What You Reap'
+    dialogue:
+      - 'Good job, Friend!'
+      - "It's time for your hard work to pay off..."
+    amount: 1
+    description: 'Talk to Randy'
+    reward: 1
     action:
       action_type: set_island
       island_level: 1
-    next: something
+    next: level_one_done
+  level_one_done:
+    type: line_completed
+    title: 'All Done!'
+    description: 'All Quests Completed'
 

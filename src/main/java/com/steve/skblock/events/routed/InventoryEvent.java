@@ -28,18 +28,19 @@ public class InventoryEvent implements Listener {
         if (event.getClickedInventory() != null) {
             Inventory top = event.getView().getTopInventory();
 //            if (event.getClickedInventory().getHolder() != null) {
-            if (!(top.getHolder() instanceof InventoryMenu inventoryMenu)) {
+            if ((top.getHolder() instanceof InventoryMenu inventoryMenu)) {
+                event.setCancelled(true);
+                if (event.getClickedInventory() == top) {
+                    Bukkit.getScheduler().runTaskLater(
+                            plugin, () -> {
+                                inventoryMenu.handleClick(event);
+                            }, 1L
+                    );
+                    return;
+                }
                 return;
             }
-            event.setCancelled(true);
-            if (event.getClickedInventory() == top) {
-                Bukkit.getScheduler().runTaskLater(
-                        plugin, () -> {
-                            inventoryMenu.handleClick(event);
-                        }, 1L
-                );
-                return;
-            }
+
 
             if (event.getClickedInventory().getType() == InventoryType.CRAFTING || event.getClickedInventory().getType() == InventoryType.WORKBENCH) {
                 ItemStack itemStack = event.getClickedInventory().getItem(event.getRawSlot());
