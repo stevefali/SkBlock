@@ -60,7 +60,7 @@ public class NpcFactory {
                         },
                         null,
                         NPC_TITLE_SCALE,
-                        "§aSkyblock Menu", "§6Randy"
+                         "§9Skyblock Shop","§aSkyblock Menu", "§6Randy"
                 );
                 worldNpcIds.add(randyId);
             }

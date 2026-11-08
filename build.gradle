@@ -114,6 +114,17 @@ tasks.reobfJar {
                 into file(exportPath)
                 rename '.*', "${rootProject.name}.jar"
             }
+
+            copy {
+                from file('src/main/resources/config.yml')
+                into file("$exportPath/skblock")
+            }
+
+            copy {
+                from file('src/main/resources/config.yml')
+                into file("$exportPath/BileTools/runtime-plugins/skblock")
+            }
+
             println "Exported plugin to $exportPath"
         } else {
             println "Error exporting plugin jar."

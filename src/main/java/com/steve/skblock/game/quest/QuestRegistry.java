@@ -3,10 +3,13 @@ package com.steve.skblock.game.quest;
 import com.steve.skblock.game.quest.type.*;
 import com.steve.skblock.game.quest.type.action.CustomAction;
 import com.steve.skblock.game.quest.type.action.GiveItemAction;
+import com.steve.skblock.game.quest.type.action.RandySpeakAction;
 import com.steve.skblock.game.quest.type.action.SetIslandAction;
 import org.bukkit.Material;
+import org.bukkit.TreeType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.Plugin;
 
 import java.lang.invoke.MethodHandle;
@@ -30,11 +33,13 @@ public class QuestRegistry {
     private static final String REWARD_KEY = "reward";
     private static final String NEXT_KEY = "next";
     private static final String DIALOGUE_KEY = "dialogue";
+    private static final String TREE_TYPES_KEY = "tree_types";
+    private static final String ENTITY_KEY = "entity";
     private static final String ACTION_MATERIAL_KEY = "action_material";
     private static final String MATERIAL_QUANTITY_KEY = "material_quantity";
     private static final String ACTION_KEY = "action";
     private static final String ACTION_TYPE_KEY = "action_type";
-    private static final String ISLAND_LEVEL_KEY = "island_level";
+    private static final String ISLAND_SECTION_KEY = "island_section";
     private static final String CUSTOM_ACTION_NAME_KEY = "custom_action_name";
 
     private static final String CUSTOM_ACTIONS_CLASSES_PATH = "com.steve.skblock.game.quest.type.action.custom.";
@@ -139,6 +144,54 @@ public class QuestRegistry {
                         section.getString(DESCRIPTION_KEY)
                 )
         );
+        questTypeFactories.put(
+                "travel", (id, section) -> new TravelQuest(
+                        id,
+                        section.getString(TITLE_KEY),
+                        section.getString(DESCRIPTION_KEY),
+                        section.getInt(ISLAND_SECTION_KEY),
+                        section.getInt(AMOUNT_KEY),
+                        section.getInt(REWARD_KEY),
+                        buildRewardActionFromConfig(section.getConfigurationSection(ACTION_KEY)),
+                        section.getString(NEXT_KEY)
+                )
+        );
+        questTypeFactories.put(
+                "grow_tree", (id, section) -> new GrowTreeQuest(
+                        id,
+                        section.getString(TITLE_KEY),
+                        section.getString(DESCRIPTION_KEY),
+                        buildTreeTypeList(section.getStringList(TREE_TYPES_KEY)),
+                        section.getInt(AMOUNT_KEY),
+                        section.getInt(REWARD_KEY),
+                        buildRewardActionFromConfig(section.getConfigurationSection(ACTION_KEY)),
+                        section.getString(NEXT_KEY)
+                )
+        );
+        questTypeFactories.put(
+                "smelting", (id, section) -> new SmeltingQuest(
+                        id,
+                        section.getString(TITLE_KEY),
+                        section.getString(DESCRIPTION_KEY),
+                        Material.getMaterial(section.getString(MATERIAL_KEY)),
+                        section.getInt(AMOUNT_KEY),
+                        section.getInt(REWARD_KEY),
+                        buildRewardActionFromConfig(section.getConfigurationSection(ACTION_KEY)),
+                        section.getString(NEXT_KEY)
+                )
+        );
+        questTypeFactories.put(
+                "breeding", (id, section) -> new BreedingQuest(
+                        id,
+                        section.getString(TITLE_KEY),
+                        section.getString(DESCRIPTION_KEY),
+                        EntityType.valueOf(section.getString(ENTITY_KEY)),
+                        section.getInt(AMOUNT_KEY),
+                        section.getInt(REWARD_KEY),
+                        buildRewardActionFromConfig(section.getConfigurationSection(ACTION_KEY)),
+                        section.getString(NEXT_KEY)
+                )
+        );
 
         plugin.getLogger().info("Skyblock quest types registered");
     }
@@ -152,12 +205,17 @@ public class QuestRegistry {
         );
         actionTypeFactories.put(
                 "set_island", section -> new SetIslandAction(
-                        section.getInt(ISLAND_LEVEL_KEY)
+                        section.getInt(ISLAND_SECTION_KEY)
                 )
         );
         actionTypeFactories.put(
                 "custom", section -> new CustomAction(
                         createCustomActionInstance(section.getString(CUSTOM_ACTION_NAME_KEY))
+                )
+        );
+        actionTypeFactories.put(
+                "randy_speak", section -> new RandySpeakAction(
+                        section.getStringList(DIALOGUE_KEY)
                 )
         );
 
@@ -203,6 +261,10 @@ public class QuestRegistry {
         } catch (Throwable throwable) {
             throw new RuntimeException("Error instantiating CustomRewardAction class " + className + " from class name in config.yml", throwable);
         }
+    }
+
+    private List<TreeType> buildTreeTypeList(List<String> treeNames) {
+        return treeNames.stream().map(TreeType::valueOf).toList();
     }
 
     public List<String> getAllQuestIds() {

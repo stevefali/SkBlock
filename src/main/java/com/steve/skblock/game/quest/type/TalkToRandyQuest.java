@@ -37,7 +37,7 @@ public class TalkToRandyQuest extends BaseQuest {
             Bukkit.getScheduler().runTaskLater(
                     plugin, () -> {
                         player.sendMessage("[" + lineNumber + "/" + dialogueLines.size() + "] " + dialogueLines.get(lineNumber - 1));
-                    }, 20L * lineNumber
+                    }, 30L * lineNumber
             );
         }
         super.performRewardAction(player);

@@ -179,12 +179,20 @@ public class IslandSetter {
             case 1: {
                 islandName = "Taiga";
                 islandLocation = getIslandVec3(TAIGA_COORDS);
+                Chest chest = setChest(new Location(world, -3, 65, 99));
+                Inventory chestInventory = chest.getInventory();
+                chestInventory.setItem(1, new ItemStack(Material.POTATO, 3));
                 break;
             }
             case 2: {
                 islandName = "Desert";
                 islandLocation = getIslandVec3(DESERT_COORDS);
                 Skblock.getSessionRegistry().getSession(world).unlockGenerator(GeneratorType.SAND);
+
+                Chest chest = setChest(new Location(world, -4, 65, -101));
+                Inventory chestInventory = chest.getInventory();
+                chestInventory.setItem(1, new ItemStack(Material.CARROT, 3));
+                chestInventory.setItem(3, new ItemStack(Material.RABBIT_SPAWN_EGG, 2));
                 break;
             }
             case 3: {
@@ -265,6 +273,43 @@ public class IslandSetter {
 
     private static Vec3 getIslandVec3(Vector2D islandCoords) {
         return new Vec3(islandCoords.x(), ISLAND_HEIGHT, islandCoords.y());
+    }
+
+    public static Vector2D getIslandOrigin(int sectionIndex) {
+        switch (sectionIndex) {
+            case 1: {
+                return TAIGA_COORDS;
+            }
+            case 2: {
+                return DESERT_COORDS;
+            }
+            case 3: {
+                return JUNGLE_COORDS;
+            }
+            case 4: {
+                return BADLANDS_COORDS;
+            }
+            case 5: {
+                return SAVANNA_COORDS;
+            }
+            case 6: {
+                return NETHER_COORDS;
+            }
+            case 7: {
+                return ICE_SPIKES_COORDS;
+            }
+            case 8: {
+                return END_COORDS;
+            }
+            default:
+                return new Vector2D(0, 0);
+        }
+    }
+
+    private static Chest setChest(Location chestLocation) {
+        Block chestBlock = chestLocation.getBlock();
+        chestBlock.setType(Material.CHEST);
+        return (Chest) chestBlock.getState();
     }
 
 }

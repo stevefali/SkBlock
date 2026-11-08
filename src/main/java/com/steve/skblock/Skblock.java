@@ -63,7 +63,7 @@ public final class Skblock extends JavaPlugin {
 
         SkyblockSidebar.register(megaHudService);
 
-        playerEvent = new PlayerEvent(this, lobbySpawn);
+        playerEvent = new PlayerEvent(this, lobbySpawn, sessionRegistry);
         cobbleGenerationEvent = new BlockGeneratorEvent(this, sessionRegistry);
         blockEvent = new BlockEvent(this, sessionRegistry);
         portalEvents = new PortalEvents(this);
@@ -80,6 +80,9 @@ public final class Skblock extends JavaPlugin {
         pluginManager.registerEvents(new NpcEvent(sessionRegistry), this);
         pluginManager.registerEvents(new MobSpawnEvent(sessionRegistry), this);
         pluginManager.registerEvents(new ProtectServerEvents(), this);
+        pluginManager.registerEvents(new FurnaceEvent(sessionRegistry), this);
+        pluginManager.registerEvents(new TreeGrowEvent(sessionRegistry), this);
+        pluginManager.registerEvents(new BreedingEvent(sessionRegistry), this);
 
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -102,6 +105,8 @@ public final class Skblock extends JavaPlugin {
             skyblockLobbyWorld.setPVP(false);
             skyblockLobbyWorld.setDifficulty(Difficulty.PEACEFUL);
         }
+
+        SkyblockSidebar.setPopulation(Bukkit.getOnlinePlayers().size());
 
         for (World world : Bukkit.getWorlds()) {
             NpcFactory.createNpcs(world, this);

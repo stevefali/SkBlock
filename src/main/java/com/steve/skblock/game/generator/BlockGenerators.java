@@ -78,7 +78,7 @@ public class BlockGenerators {
             .add(Material.WARPED_NYLIUM, 50)
             .add(Material.NETHER_GOLD_ORE, 30)
             .add(Material.NETHER_QUARTZ_ORE, 20)
-            .add(Material.BONE_BLOCK, 12)
+            .add(Material.SOUL_SAND, 12)
             .add(Material.GLOWSTONE, 12)
             .add(Material.MAGMA_BLOCK, 5)
             .add(Material.ANCIENT_DEBRIS, 1)

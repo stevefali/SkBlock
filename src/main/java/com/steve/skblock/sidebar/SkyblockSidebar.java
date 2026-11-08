@@ -24,13 +24,16 @@ public class SkyblockSidebar {
     private static final Map<Integer, SidebarLine> skyblockSidebarBaseLines = new HashMap<>();
     private static final String SIDEBAR_TITLE = "§a§lSKYBLOCK";
     private static MegaHudService hudService;
+    private static int population = 0;
 
     private static final int QUEST_INDEX = 2;
     private static final int QUEST_DESCRIPTION_INDEX = 3;
     private static final int QUEST_PROGRESS_INDEX = 4;
-    private static final int SKYBLOCK_SCORE_INDEX = 6;
-    private static final int ISLAND_INDEX = 8;
-    private static final int PERCENTAGES_START_INDEX = 9;
+    private static final int QUEST_REWARD_INDEX = 5;
+    private static final int SKYBLOCK_SCORE_INDEX = 7;
+    private static final int ISLAND_INDEX = 9;
+    private static final int PERCENTAGES_START_INDEX = 10;
+    private static final int POPULATION_INDEX = 14;
 
     public static void register(MegaHudService megaHudService) {
         hudService = megaHudService;
@@ -68,6 +71,7 @@ public class SkyblockSidebar {
             }
         }
         setSkyblockScoreLine(playerId, playerScore);
+        setPopulationLine(playerId);
     }
 
     public static void updateQuestSidebarLines(
@@ -86,6 +90,7 @@ public class SkyblockSidebar {
                     return;
                 }
                 setQuestProgressLine(playerId, currentProgress.getCurrentQuestProgress(), currentQuest.getTargetAmount());
+                setQuestRewardLine(playerId, currentQuest.getReward());
             }
         }
     }
@@ -102,12 +107,12 @@ public class SkyblockSidebar {
 //        lobbySidebarBaseLines.put(2, SidebarLine.BLANK);
 //        lobbySidebarBaseLines.put(3, SidebarLine.BLANK);
 //        lobbySidebarBaseLines.put(4, SidebarLine.BLANK);
-        lobbySidebarBaseLines.put(5, SidebarLine.BLANK);
-        lobbySidebarBaseLines.put(7, SidebarLine.BLANK);
-        lobbySidebarBaseLines.put(8, SidebarLine.leftSideOnly("Talk to §6Meg§r for"));
-        lobbySidebarBaseLines.put(9, SidebarLine.leftSideOnly("Skyblock options"));
-        lobbySidebarBaseLines.put(10, SidebarLine.leftSideOnly("or to return to the"));
-        lobbySidebarBaseLines.put(11, SidebarLine.leftSideOnly("main lobby."));
+        lobbySidebarBaseLines.put(8, SidebarLine.BLANK);
+        lobbySidebarBaseLines.put(9, SidebarLine.leftSideOnly("Talk to §6Meg§r for"));
+        lobbySidebarBaseLines.put(10, SidebarLine.leftSideOnly("Skyblock options"));
+        lobbySidebarBaseLines.put(11, SidebarLine.leftSideOnly("or to return to the"));
+        lobbySidebarBaseLines.put(12, SidebarLine.leftSideOnly("main lobby."));
+        lobbySidebarBaseLines.put(13, SidebarLine.BLANK);
     }
 
     private static void populateSkyblockMap() {
@@ -116,8 +121,9 @@ public class SkyblockSidebar {
 //        skyblockSidebarBaseLines.put(2, SidebarLine.BLANK);
 //        skyblockSidebarBaseLines.put(3, SidebarLine.BLANK);
 //        skyblockSidebarBaseLines.put(4, SidebarLine.BLANK);
-        skyblockSidebarBaseLines.put(5, SidebarLine.BLANK);
-        skyblockSidebarBaseLines.put(7, SidebarLine.BLANK);
+        skyblockSidebarBaseLines.put(6, SidebarLine.BLANK);
+        skyblockSidebarBaseLines.put(8, SidebarLine.BLANK);
+        skyblockSidebarBaseLines.put(11, SidebarLine.BLANK);
     }
 
     public static void setSkyblockScoreLine(UUID playerId, int score) {
@@ -134,6 +140,10 @@ public class SkyblockSidebar {
 
     public static void setQuestProgressLine(UUID playerId, int questProgress, int targetAmount) {
         hudService.setSidebarLine(playerId, QUEST_PROGRESS_INDEX, SidebarLine.leftSideOnly("Progress: §l" + questProgress + "/" + targetAmount));
+    }
+
+    public static void setQuestRewardLine(UUID playerId, int questReward) {
+        hudService.setSidebarLine(playerId, QUEST_REWARD_INDEX, SidebarLine.leftSideOnly("Reward: §9" + questReward));
     }
 
     public static void setIslandLine(UUID playerId, String islandName) {
@@ -154,6 +164,14 @@ public class SkyblockSidebar {
             );
             index++;
         }
+    }
+
+    public static void setPopulationLine(UUID playerId) {
+        hudService.setSidebarLine(playerId, POPULATION_INDEX, SidebarLine.rightSideOnly("§7Playing Skyblock: " + population));
+    }
+
+    public static void setPopulation(int pop) {
+        population = pop;
     }
 
 }

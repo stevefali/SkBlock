@@ -69,6 +69,30 @@ quests:
     description: 'Harvest 32 Oak Logs'
     reward: 5
     action: null
+    next: randy_get_water
+  randy_get_water:
+    type: talk_randy
+    title: 'Sow What You Reap'
+    dialogue:
+      - "Wonderful. Now let's see about getting a reliable food source."
+      - "Try growing some wheat. Here's some water so your crops don't dry out."
+      - 'If you need more seeds, I can trade you for some in the Skyblock Shop!'
+    amount: 1
+    description: 'Talk to Randy'
+    reward: 1
+    action:
+      action_type: give_item
+      action_material: WATER_BUCKET
+      material_quantity: 1
+    next: craft_bread
+  craft_bread:
+    type: craft
+    title: 'Sow What You Reap'
+    material: BREAD
+    amount: 1
+    description: 'Craft 1 Bread'
+    reward: 1
+    action: null
     next: randy_get_taiga
   randy_get_taiga:
     type: talk_randy
@@ -78,12 +102,138 @@ quests:
       - "It's time for your hard work to pay off..."
     amount: 1
     description: 'Talk to Randy'
-    reward: 1
+    reward: 10
     action:
       action_type: set_island
-      island_level: 1
-    next: level_one_done
-  level_one_done:
+      island_section: 1
+    next: travel_taiga
+  travel_taiga:
+    type: travel
+    title: 'Next Level Stuff'
+    island_section: 1
+    amount: 1
+    description: 'Go to your New Island'
+    reward: 1
+    action:
+      action_type: randy_speak
+      dialogue:
+        - 'Welcome to your new Taiga island!'
+        - 'Have a look around. Notice the cobblestone generator...'
+        - 'You can also get various ores and other blocks from generators. Give it a try!'
+    next: get_cobble
+  get_cobble:
+    type: harvest
+    title: 'Next Level Stuff'
+    material: COBBLESTONE
+    amount: 64
+    description: 'Mine 64 Cobblestone'
+    reward: 2
+    action:
+      action_type: randy_speak
+      dialogue:
+        - 'You must be getting hungry.'
+        - "Why don't we try some potato farming!"
+    next: harvest_potato
+  harvest_potato:
+    type: harvest
+    title: 'Growing Strong'
+    material: POTATO
+    amount: 32
+    description: 'Harvest 32 Potatoes'
+    reward: 2
+    action: null
+    next: grow_spruce
+  grow_spruce:
+    type: grow_tree
+    title: 'Growing Strong'
+    tree_types:
+      - REDWOOD
+      - TALL_REDWOOD
+      - MEGA_REDWOOD
+      - MEGA_PINE
+    amount: 16
+    description: 'Grow 16 Spruce Trees'
+    reward: 3
+    action: null
+    next: more_bread
+  more_bread:
+    type: craft
+    title: 'Growing Strong'
+    material: BREAD
+    amount: 64
+    description: 'Craft 64 Bread'
+    reward: 3
+    action: null
+    next: randy_get_desert
+  randy_get_desert:
+    type: talk_randy
+    title: 'Growing Strong'
+    dialogue:
+      - "Good news: You've earned unlocked another island!"
+    amount: 1
+    description: 'Talk to Randy'
+    reward: 10
+    action:
+      action_type: set_island
+      island_section: 2
+    next: travel_desert
+  travel_desert:
+    type: travel
+    title: 'Just Desert'
+    island_section: 2
+    amount: 1
+    description: 'Go to your New Island'
+    reward: 1
+    action:
+      action_type: randy_speak
+      dialogue:
+        - 'Welcome to your very own new Desert!'
+    next: smelt_glass
+  smelt_glass:
+    type: smelting
+    title: 'Just Desert'
+    material: GLASS
+    amount: 64
+    description: 'Smelt 64 Glass'
+    reward: 2
+    action: null
+    next: harvest_cactus
+  harvest_cactus:
+    type: harvest
+    title: 'Just Desert'
+    material: CACTUS
+    amount: 64
+    description: 'Harvest 64 Cactus'
+    reward: 2
+    action: null
+    next: randy_give_rabbit
+  randy_give_rabbit:
+    type: talk_randy
+    title: 'Just Desert'
+    dialogue:
+      - "Why don't we try raising some animals?"
+      - 'Rabbits should be fun!'
+      - 'Be careful, though...'
+      - "Make sure they don't hop off the edge!!"
+    amount: 1
+    description: 'Talk to Randy'
+    reward: 5
+    action:
+      action_type: give_item
+      action_material: RABBIT_SPAWN_EGG
+      material_quantity: 2
+    next: breed_rabbit
+  breed_rabbit:
+    type: breeding
+    title: 'Just Desert'
+    entity: RABBIT
+    amount: 16
+    description: 'Breed 16 Rabbits'
+    reward: 2
+    action: null
+
+    next: all_done
+  all_done:
     type: line_completed
     title: 'All Done!'
     description: 'All Quests Completed'

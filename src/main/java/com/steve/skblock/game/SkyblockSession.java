@@ -16,16 +16,23 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Hoglin;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.PiglinAbstract;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityBreedEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.FurnaceSmeltEvent;
+import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.steve.skblock.worlds.SkyblockWorldFactory.WORLD_NAME_PREFIX;
@@ -117,20 +124,43 @@ public class SkyblockSession {
     public void onBlockBreak(BlockBreakEvent event) {
 //        Player player = event.getPlayer();
 
-        if (getCurrentQuest() instanceof HarvestQuest harvestQuest && event.getBlock().getType() == harvestQuest.getMaterial()) {
-            advanceQuest(1);
-        }
+//        if (getCurrentQuest() instanceof HarvestQuest harvestQuest && event.getBlock().getType() == harvestQuest.getMaterial()) {
+//            advanceQuest(1);
+//        }
 
         //      TODO: Remove this!!
         if (event.getBlock().getType() == Material.ORANGE_WOOL) {
 //            addScore(1);
             advanceQuest(1);
         }
-        if (event.getBlock().getType() == Material.BLUE_WOOL) {
-            System.out.println(NameFormatter.format(event.getBlock().getType().name()));
+
+//        plugin.getLogger().info("Block Break Event: " + event.getBlock().getType().name());
+//
+//        plugin.getLogger().info("*******************");
+    }
+
+    public void onBlockDropItem(BlockDropItemEvent event) {
+        if (getCurrentQuest() instanceof HarvestQuest harvestQuest) {
+            List<Material> droppedMaterials = event.getItems().stream().map(item -> item.getItemStack().getType()).toList();
+            if (droppedMaterials.contains(harvestQuest.getMaterial())) {
+                int questItemCount = 0;
+                for (Item drop : event.getItems()) {
+                    if (drop.getItemStack().getType() == harvestQuest.getMaterial()) {
+                        questItemCount += drop.getItemStack().getAmount();
+                    }
+                }
+                advanceQuest(questItemCount);
+            }
         }
     }
 
+    public void onTreeGrow(StructureGrowEvent event) {
+        if (getCurrentQuest() instanceof GrowTreeQuest growTreeQuest) {
+            if (growTreeQuest.getTreeTypes().contains(event.getSpecies())) {
+                advanceQuest(1);
+            }
+        }
+    }
 
     public void onGenerateBlock(BlockFormEvent event) {
 //        String biomeName = event.getBlock().getBiome().toString().split(":")[1];
@@ -143,10 +173,6 @@ public class SkyblockSession {
         Material generatedBlock = BlockGenerators.GENERATORS.get(generatorType).getRandomEntry();
         event.getNewState().setType(generatedBlock);
 
-        // TODO: Remove this!
-//        for (Map.Entry<Material, String> entry : BlockGenerators.GENERATORS.get(generatorType).getPercentages().entrySet()) {
-//            plugin.getLogger().info(entry.getKey().name() + ": " + entry.getValue() + "%");
-//        }
     }
 
     public void onNpcInteract(NpcInteractionEvent event) {
@@ -178,6 +204,30 @@ public class SkyblockSession {
         }
     }
 
+    public void onItemSmelt(FurnaceSmeltEvent event) {
+        if (getCurrentQuest() instanceof SmeltingQuest smeltingQuest && event.getResult().getType() == smeltingQuest.getMaterial()) {
+            advanceQuest(event.getResult().getAmount());
+        }
+    }
+
+    public void onEntityBreed(EntityBreedEvent event) {
+        if (getCurrentQuest() instanceof BreedingQuest breedingQuest && event.getEntity().getType() == breedingQuest.getEntityType()) {
+            advanceQuest(1);
+        }
+    }
+
+    public void onPlayerFallInVoid(EntityDamageEvent event) {
+        event.setCancelled(true);
+        Location respawn = getPlayer().getRespawnLocation();
+        if (respawn == null) {
+            respawn = new Location(getWorld(), 0, 65, 0);
+        }
+        getPlayer().teleport(respawn);
+        getPlayer().setFallDistance(0);
+        if (skyblockScore > 0) {
+            addScore(-1);
+        }
+    }
 
     public World getWorld() {
         World world = Bukkit.getWorld(worldId);
@@ -212,7 +262,7 @@ public class SkyblockSession {
                     skyblockProgress.onQuestComplete(currentQuest.getNextQuestId());
                     SkyblockSidebar.updateQuestSidebarLines(worldOwnerPlayerId, this);
                     updateBossBar();
-                }, 40L
+                }, 20L
         );
     }
 
@@ -230,6 +280,7 @@ public class SkyblockSession {
                 : " §l(" + skyblockProgress.getCurrentQuestProgress() + "/" + currentQuest.getTargetAmount() + ")";
 //        String progress = " §l(" + skyblockProgress.getCurrentQuestProgress() + "/" + currentQuest.getTargetAmount() + ")";
         bossBar.setTitle("§3§l" + currentQuest.getDescription() + progress);
+        bossBar.setProgress((double) skyblockProgress.getCurrentQuestProgress() / currentQuest.getTargetAmount());
     }
 
     public void hideBossBar() {

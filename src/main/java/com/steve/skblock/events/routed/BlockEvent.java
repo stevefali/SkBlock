@@ -5,10 +5,12 @@ import com.steve.skblock.game.SkyblockSession;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.TreeType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.Plugin;
 
@@ -50,7 +52,10 @@ public class BlockEvent implements Listener {
 //            Sound.ENTITY_PANDA_SNEEZE,
 //            Sound.ITEM_OMINOUS_BOTTLE_DISPOSE
     ));
-    private static int currentSound = 0;
+    private static int currentTree = 0;
+
+    private static ArrayList<TreeType> treeTypes = new ArrayList<>(List.of(TreeType.values()));
+
 
     public BlockEvent(Plugin plugin, SessionRegistry sessionRegistry) {
         this.plugin = plugin;
@@ -82,25 +87,34 @@ public class BlockEvent implements Listener {
 
         }
 
+/*
+
         if (type == Material.BLUE_WOOL) {
-            currentSound++;
-            if (currentSound > sounds.size() - 1) {
-                currentSound = 0;
+            currentTree++;
+            if (currentTree > treeTypes.size() - 1) {
+                currentTree = 0;
             }
         }
         if (type == Material.YELLOW_WOOL) {
-            currentSound--;
-            if (currentSound < 0) {
-                currentSound = sounds.size() - 1;
+            currentTree--;
+            if (currentTree < 0) {
+                currentTree = treeTypes.size() - 1;
             }
         }
         if (type == Material.GREEN_WOOL) {
-            player.playSound(player.getLocation(), sounds.get(currentSound), 2.0f, 1.0f);
-            player.sendMessage("Index: " + currentSound + ", Sound: " + sounds.get(currentSound).toString());
+//            player.playSound(player.getLocation(), sounds.get(currentTree), 2.0f, 1.0f);
+//             player.getWorld().generateTree(event.getBlock().getLocation(), treeTypes.get(currentTree));
+            Location treeLocation = event.getBlock().getLocation().add(new Vector(0, -1, 0));
+            boolean success = player.getWorld().generateTree(treeLocation, TreeType.ACACIA);
+//            player.sendMessage("Index: " + currentTree + ", Sound: " + sounds.get(currentTree).toString());
+            player.sendMessage("Index: " + currentTree + ", Tree: " + treeTypes.get(currentTree).toString() + " success: " + success);
         }
         if (type == Material.RED_WOOL) {
             player.stopAllSounds();
         }
+
+*/
+
 
 
     }
@@ -121,6 +135,20 @@ public class BlockEvent implements Listener {
         }
     }
 
+    @EventHandler(ignoreCancelled = true)
+    public void onItemDrop(BlockDropItemEvent event) {
+
+        SkyblockSession skyblockSession = sessionRegistry.getSession(event.getBlock().getWorld());
+        if (skyblockSession != null) {
+            skyblockSession.onBlockDropItem(event);
+            return;
+        }
+
+//        for (Item item : event.getItems()) {
+//            plugin.getLogger().info("Item drop: " + item.getItemStack().getType().name() + ": " + item.getItemStack().getAmount());
+//        }
+
+    }
 
 
 

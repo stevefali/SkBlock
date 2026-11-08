@@ -2,6 +2,7 @@ package com.steve.skblock.game;
 
 import com.steve.skblock.Skblock;
 import com.steve.skblock.game.data.SkyblockDataStore;
+import com.steve.skblock.game.quest.type.TravelQuest;
 import com.steve.skblock.sidebar.SkyblockSidebar;
 import com.steve.skblock.util.NameFormatter;
 import org.bukkit.Bukkit;
@@ -103,6 +104,12 @@ public class SessionRegistry {
 //                                        NameFormatter.format(playerBiomeKey.getKey()),
 //                                        BlockGenerators.GENERATORS.get(generatorType).getPercentages()
 //                                );
+                            }
+
+                            if (session.getCurrentQuest() instanceof TravelQuest travelQuest) {
+                                if (travelQuest.getRegionBox().contains(player.getLocation().toVector())) {
+                                    session.advanceQuest(1);
+                                }
                             }
                         }
                     }

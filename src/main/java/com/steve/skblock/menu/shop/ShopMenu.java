@@ -21,9 +21,17 @@ public class ShopMenu extends InventoryMenu {
     private final SkyblockSession skyblockSession;
 
     private static final List<ShopItem> ITEMS = List.of(
-            new ShopItem(0, new ItemStack(Material.IRON_INGOT, 1), new ItemStack(Material.STICK, 6), GeneratorType.DEFAULT),
-            new ShopItem(1, new ItemStack(Material.GOLD_INGOT, 8), new ItemStack(Material.IRON_INGOT, 1), GeneratorType.TERRACOTTA),
-            new ShopItem(2, new ItemStack(Material.LAVA_BUCKET, 1), new ItemStack(Material.IRON_INGOT, 2), GeneratorType.DEEPSLATE)
+            new ShopItem(0, new ItemStack(Material.WHEAT_SEEDS, 1), new ItemStack(Material.OAK_LOG, 16), GeneratorType.DEFAULT),
+            new ShopItem(1, new ItemStack(Material.WATER_BUCKET, 1), new ItemStack(Material.BREAD, 16), GeneratorType.DEFAULT),
+            new ShopItem(2, new ItemStack(Material.APPLE, 1), new ItemStack(Material.OAK_LOG, 32), GeneratorType.DEFAULT),
+            new ShopItem(3, new ItemStack(Material.POTATO, 1), new ItemStack(Material.SPRUCE_LOG, 32), GeneratorType.DEFAULT),
+
+            new ShopItem(4, new ItemStack(Material.CARROT, 1), new ItemStack(Material.CACTUS, 32), GeneratorType.SAND),
+            new ShopItem(5, new ItemStack(Material.RABBIT_SPAWN_EGG, 1), new ItemStack(Material.CARROT, 64), GeneratorType.SAND)
+
+
+//            new ShopItem(1, new ItemStack(Material.GOLD_INGOT, 8), new ItemStack(Material.IRON_INGOT, 1), GeneratorType.TERRACOTTA),
+//            new ShopItem(2, new ItemStack(Material.LAVA_BUCKET, 1), new ItemStack(Material.IRON_INGOT, 2), GeneratorType.DEEPSLATE)
     );
 
     private final MenuItem backButton = new MenuItem(

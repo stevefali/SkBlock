@@ -9,10 +9,10 @@ import static com.steve.skblock.worlds.SkyblockWorldFactory.WORLD_NAME_PREFIX;
 
 public class SetIslandAction implements QuestRewardAction {
 
-    private final int islandLevel;
+    private final int islandSection;
 
-    public SetIslandAction(int islandLevel) {
-        this.islandLevel = islandLevel;
+    public SetIslandAction(int islandSection) {
+        this.islandSection = islandSection;
     }
 
     @Override
@@ -22,6 +22,6 @@ public class SetIslandAction implements QuestRewardAction {
 
     @Override
     public void performAction(Player player) {
-        IslandSetter.setIslandInSection(islandLevel, Bukkit.getWorld(WORLD_NAME_PREFIX + player.getUniqueId()), player);
+        IslandSetter.setIslandInSection(islandSection, Bukkit.getWorld(WORLD_NAME_PREFIX + player.getUniqueId()), player);
     }
 }
