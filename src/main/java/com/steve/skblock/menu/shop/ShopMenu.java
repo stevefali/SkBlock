@@ -21,13 +21,24 @@ public class ShopMenu extends InventoryMenu {
     private final SkyblockSession skyblockSession;
 
     private static final List<ShopItem> ITEMS = List.of(
-            new ShopItem(0, new ItemStack(Material.WHEAT_SEEDS, 1), new ItemStack(Material.OAK_LOG, 16), GeneratorType.DEFAULT),
-            new ShopItem(1, new ItemStack(Material.WATER_BUCKET, 1), new ItemStack(Material.BREAD, 16), GeneratorType.DEFAULT),
-            new ShopItem(2, new ItemStack(Material.APPLE, 1), new ItemStack(Material.OAK_LOG, 32), GeneratorType.DEFAULT),
-            new ShopItem(3, new ItemStack(Material.POTATO, 1), new ItemStack(Material.SPRUCE_LOG, 32), GeneratorType.DEFAULT),
+            new ShopItem(1, new ItemStack(Material.WHEAT_SEEDS, 1), new ItemStack(Material.OAK_LOG, 16), GeneratorType.DEFAULT),
+            new ShopItem(2, new ItemStack(Material.WATER_BUCKET, 1), new ItemStack(Material.BREAD, 16), GeneratorType.DEFAULT),
+            new ShopItem(3, new ItemStack(Material.APPLE, 1), new ItemStack(Material.OAK_LOG, 32), GeneratorType.DEFAULT),
+            new ShopItem(4, new ItemStack(Material.POTATO, 1), new ItemStack(Material.SPRUCE_LOG, 32), GeneratorType.DEFAULT),
+            new ShopItem(5, new ItemStack(Material.BROWN_MUSHROOM, 1), new ItemStack(Material.SPRUCE_LOG, 64), GeneratorType.DEFAULT),
+            new ShopItem(6, new ItemStack(Material.LAVA_BUCKET, 1), new ItemStack(Material.APPLE, 32), GeneratorType.DEFAULT),
+            new ShopItem(7, new ItemStack(Material.SPRUCE_SAPLING, 1), new ItemStack(Material.OAK_LOG, 64), GeneratorType.DEFAULT),
 
-            new ShopItem(4, new ItemStack(Material.CARROT, 1), new ItemStack(Material.CACTUS, 32), GeneratorType.SAND),
-            new ShopItem(5, new ItemStack(Material.RABBIT_SPAWN_EGG, 1), new ItemStack(Material.CARROT, 64), GeneratorType.SAND)
+            new ShopItem(8, new ItemStack(Material.CARROT, 1), new ItemStack(Material.CACTUS, 32), GeneratorType.SAND),
+            new ShopItem(10, new ItemStack(Material.RABBIT_SPAWN_EGG, 1), new ItemStack(Material.IRON_INGOT, 64), GeneratorType.SAND),
+            new ShopItem(11, new ItemStack(Material.SUGAR_CANE, 1), new ItemStack(Material.SAND, 64), GeneratorType.SAND),
+            new ShopItem(12, new ItemStack(Material.CACTUS, 1), new ItemStack(Material.BREAD, 32), GeneratorType.SAND),
+
+            new ShopItem(13, new ItemStack(Material.WHITE_WOOL, 1), new ItemStack(Material.JUNGLE_LOG, 64), GeneratorType.GRASS_BLOCK),
+            new ShopItem(14, new ItemStack(Material.PUMPKIN_SEEDS, 1), new ItemStack(Material.IRON_INGOT, 32), GeneratorType.GRASS_BLOCK),
+            new ShopItem(15, new ItemStack(Material.CHICKEN_SPAWN_EGG, 1), new ItemStack(Material.IRON_INGOT, 64), GeneratorType.GRASS_BLOCK),
+            new ShopItem(16, new ItemStack(Material.MELON_SEEDS, 1), new ItemStack(Material.IRON_INGOT, 32), GeneratorType.GRASS_BLOCK),
+            new ShopItem(17, new ItemStack(Material.GRAVEL, 16), new ItemStack(Material.COBBLESTONE, 32), GeneratorType.GRASS_BLOCK)
 
 
 //            new ShopItem(1, new ItemStack(Material.GOLD_INGOT, 8), new ItemStack(Material.IRON_INGOT, 1), GeneratorType.TERRACOTTA),

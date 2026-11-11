@@ -182,6 +182,10 @@ public class IslandSetter {
                 Chest chest = setChest(new Location(world, -3, 65, 99));
                 Inventory chestInventory = chest.getInventory();
                 chestInventory.setItem(1, new ItemStack(Material.POTATO, 3));
+                chestInventory.setItem(5, new ItemStack(Material.MOSSY_COBBLESTONE, 4));
+                chestInventory.setItem(12, new ItemStack(Material.NAME_TAG, 1));
+                chestInventory.setItem(16, new ItemStack(Material.VINE));
+                chestInventory.setItem(21, new ItemStack(Material.SPRUCE_LEAVES, 5));
                 break;
             }
             case 2: {
@@ -193,20 +197,24 @@ public class IslandSetter {
                 Inventory chestInventory = chest.getInventory();
                 chestInventory.setItem(1, new ItemStack(Material.CARROT, 3));
                 chestInventory.setItem(3, new ItemStack(Material.RABBIT_SPAWN_EGG, 2));
+                chestInventory.setItem(24, new ItemStack(Material.GUNPOWDER, 2));
+                chestInventory.setItem(11, new ItemStack(Material.SAND, 2));
+                chestInventory.setItem(12, new ItemStack(Material.DEAD_BUSH));
                 break;
             }
             case 3: {
                 islandName = "Jungle";
-                Location location = new Location(world, -100, 65, -100);
-                Block block = location.getBlock();
-                block.setType(Material.CHEST);
-                Chest chest = (Chest) block.getState();
-
-                Inventory inventory = chest.getInventory();
-                inventory.setItem(3, new ItemStack(Material.STICK, 4));
-
                 islandLocation = getIslandVec3(JUNGLE_COORDS);
                 Skblock.getSessionRegistry().getSession(world).unlockGenerator(GeneratorType.GRASS_BLOCK);
+
+                Chest chest = setChest(new Location(world, -100, 65, -100));
+                Inventory inventory = chest.getInventory();
+                inventory.setItem(3, new ItemStack(Material.STICK, 4));
+                inventory.setItem(9, new ItemStack(Material.COCOA_BEANS, 1));
+                inventory.setItem(16, new ItemStack(Material.VINE, 6));
+                inventory.setItem(11, new ItemStack(Material.JUNGLE_LEAVES, 4));
+                inventory.setItem(24, new ItemStack(Material.EGG, 2));
+                inventory.setItem(13, new ItemStack(Material.GRAVEL, 4));
                 break;
             }
             case 4: {

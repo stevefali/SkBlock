@@ -1,10 +1,7 @@
 package com.steve.skblock.game.quest;
 
 import com.steve.skblock.game.quest.type.*;
-import com.steve.skblock.game.quest.type.action.CustomAction;
-import com.steve.skblock.game.quest.type.action.GiveItemAction;
-import com.steve.skblock.game.quest.type.action.RandySpeakAction;
-import com.steve.skblock.game.quest.type.action.SetIslandAction;
+import com.steve.skblock.game.quest.type.action.*;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.configuration.ConfigurationSection;
@@ -192,6 +189,17 @@ public class QuestRegistry {
                         section.getString(NEXT_KEY)
                 )
         );
+        questTypeFactories.put(
+                "sleep", (id, section) -> new SleepQuest(
+                        id,
+                        section.getString(TITLE_KEY),
+                        section.getString(DESCRIPTION_KEY),
+                        section.getInt(AMOUNT_KEY),
+                        section.getInt(REWARD_KEY),
+                        buildRewardActionFromConfig(section.getConfigurationSection(ACTION_KEY)),
+                        section.getString(NEXT_KEY)
+                )
+        );
 
         plugin.getLogger().info("Skyblock quest types registered");
     }
@@ -217,6 +225,9 @@ public class QuestRegistry {
                 "randy_speak", section -> new RandySpeakAction(
                         section.getStringList(DIALOGUE_KEY)
                 )
+        );
+        actionTypeFactories.put(
+                "empty", section -> new EmptyAction()
         );
 
         plugin.getLogger().info("Skyblock quest action types registered");

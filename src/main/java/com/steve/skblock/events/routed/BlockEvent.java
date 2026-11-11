@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.world.TimeSkipEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
@@ -116,7 +117,6 @@ public class BlockEvent implements Listener {
 */
 
 
-
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -137,19 +137,21 @@ public class BlockEvent implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onItemDrop(BlockDropItemEvent event) {
-
         SkyblockSession skyblockSession = sessionRegistry.getSession(event.getBlock().getWorld());
         if (skyblockSession != null) {
             skyblockSession.onBlockDropItem(event);
             return;
         }
-
-//        for (Item item : event.getItems()) {
-//            plugin.getLogger().info("Item drop: " + item.getItemStack().getType().name() + ": " + item.getItemStack().getAmount());
-//        }
-
     }
 
+
+    // TODO: Remove this!
+    @EventHandler
+    public void onSleepNight(TimeSkipEvent event) {
+        if (event.getSkipReason() == TimeSkipEvent.SkipReason.NIGHT_SKIP) {
+            plugin.getLogger().info("Time skipped: " + event.getSkipAmount());
+        }
+    }
 
 
 }

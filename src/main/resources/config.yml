@@ -1,6 +1,22 @@
-starting_quest: punch_it
+starting_quest: welcome
 
 quests:
+  welcome:
+    type: talk_randy
+    title: 'Welcome to Skyblock'
+    dialogue:
+      - 'Welcome to your brand new Skyblock world!'
+      - 'Progressing through the quest line will unlock new islands and increase your Skyblock score.'
+      - 'There are also several ore/block generators to unlock.'
+      - "If you're short on supplies, I can trade with you for items in the Skyblock Shop."
+      - "Falling into the void will reduce your Skyblock score."
+      - "Let's get started!"
+    amount: 1
+    description: 'Talk to Randy'
+    reward: 0
+    action:
+      action_type: empty
+    next: punch_it
   punch_it:
     type: harvest
     title: 'Punch It!'
@@ -67,7 +83,7 @@ quests:
     material: OAK_LOG
     amount: 32
     description: 'Harvest 32 Oak Logs'
-    reward: 5
+    reward: 3
     action: null
     next: randy_get_water
   randy_get_water:
@@ -102,7 +118,7 @@ quests:
       - "It's time for your hard work to pay off..."
     amount: 1
     description: 'Talk to Randy'
-    reward: 10
+    reward: 6
     action:
       action_type: set_island
       island_section: 1
@@ -162,7 +178,7 @@ quests:
     material: BREAD
     amount: 64
     description: 'Craft 64 Bread'
-    reward: 3
+    reward: 4
     action: null
     next: randy_get_desert
   randy_get_desert:
@@ -172,7 +188,7 @@ quests:
       - "Good news: You've earned unlocked another island!"
     amount: 1
     description: 'Talk to Randy'
-    reward: 10
+    reward: 6
     action:
       action_type: set_island
       island_section: 2
@@ -217,7 +233,7 @@ quests:
       - "Make sure they don't hop off the edge!!"
     amount: 1
     description: 'Talk to Randy'
-    reward: 5
+    reward: 4
     action:
       action_type: give_item
       action_material: RABBIT_SPAWN_EGG
@@ -231,6 +247,81 @@ quests:
     description: 'Breed 16 Rabbits'
     reward: 2
     action: null
+    next: craft_rabbit_stew
+  craft_rabbit_stew:
+    type: craft
+    title: 'Just Desert'
+    material: RABBIT_STEW
+    amount: 32
+    description: 'Craft 32 Rabbit Stew'
+    reward: 4
+    action: null
+    next: randy_get_jungle
+  randy_get_jungle:
+    type: talk_randy
+    title: 'Just Desert'
+    dialogue:
+      - "Isn't this fun? Let's keep this going!"
+    amount: 1
+    description: 'Talk to Randy'
+    reward: 6
+    action:
+      action_type: set_island
+      island_section: 3
+    next: travel_jungle
+  travel_jungle:
+    type: travel
+    title: 'Welcome to the Jungle'
+    island_section: 3
+    amount: 1
+    description: 'Go to your New Island'
+    reward: 1
+    action:
+      action_type: randy_speak
+      dialogue:
+        - 'Hey, look at that, a sheep!'
+        - 'Now you can finally make a bed and get some rest.'
+    next: sleep_night
+  sleep_night:
+    type: sleep
+    title: 'Welcome to the Jungle'
+    amount: 2
+    description: 'Sleep through 2 nights'
+    reward: 2
+    action: null
+    next: grow_jungle
+  grow_jungle:
+    type: grow_tree
+    title: 'Welcome to the Jungle'
+    tree_types:
+      - JUNGLE
+      - SMALL_JUNGLE
+      - COCOA_TREE
+    amount: 24
+    description: 'Grow 24 Jungle Trees'
+    reward: 3
+    action: null
+    next: harvest_melon
+  harvest_melon:
+    type: harvest
+    title: 'Welcome to the Jungle'
+    material: MELON
+    amount: 64
+    description: 'Harvest 64 Melon Slices'
+    reward: 1
+    action: null
+
+
+    next: breed_sheep
+  breed_sheep:
+    type: breeding
+    title: 'Welcome to the Jungle'
+    entity: SHEEP
+    amount: 16
+    description: 'Breed 16 Sheep'
+    reward: 2
+    action: null
+
 
     next: all_done
   all_done:

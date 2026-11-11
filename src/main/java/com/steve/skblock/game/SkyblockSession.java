@@ -12,6 +12,8 @@ import com.steve.skblock.util.NameFormatter;
 import com.steve.skblock.util.TitlesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -28,6 +30,7 @@ import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.event.world.TimeSkipEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -137,6 +140,9 @@ public class SkyblockSession {
 //        plugin.getLogger().info("Block Break Event: " + event.getBlock().getType().name());
 //
 //        plugin.getLogger().info("*******************");
+//        if (event.getBlock().getType() == Material.CACTUS) {
+//            plugin.getLogger().info("cactus dropped");
+//        }
     }
 
     public void onBlockDropItem(BlockDropItemEvent event) {
@@ -149,6 +155,7 @@ public class SkyblockSession {
                         questItemCount += drop.getItemStack().getAmount();
                     }
                 }
+                questItemCount += dependentCount(event.getBlock(), event.getBlockState().getType());
                 advanceQuest(questItemCount);
             }
         }
@@ -216,6 +223,10 @@ public class SkyblockSession {
         }
     }
 
+    public void onPlayerSleep(TimeSkipEvent event) {
+
+    }
+
     public void onPlayerFallInVoid(EntityDamageEvent event) {
         event.setCancelled(true);
         Location respawn = getPlayer().getRespawnLocation();
@@ -225,8 +236,29 @@ public class SkyblockSession {
         getPlayer().teleport(respawn);
         getPlayer().setFallDistance(0);
         if (skyblockScore > 0) {
-            addScore(-1);
+            addScore(-2);
         }
+    }
+
+
+    private int dependentCount(Block brokenBlock, Material material) {
+        if (!isDependentColumn(material)) {
+            return 0;
+        }
+
+        int dependents = 0;
+        Block oneAbove = brokenBlock.getRelative(BlockFace.UP);
+        while (oneAbove.getType() == material) {
+            dependents++;
+            oneAbove = oneAbove.getRelative(BlockFace.UP);
+        }
+        return dependents;
+    }
+
+    private boolean isDependentColumn(Material material) {
+        return material == Material.CACTUS
+                || material == Material.SUGAR_CANE
+                || material == Material.BAMBOO;
     }
 
     public World getWorld() {
